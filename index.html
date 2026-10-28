@@ -1,0 +1,2076 @@
+<!doctype html>
+<html lang="es">
+<head>
+<title>Mirador</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f5f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161b" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Qué pasa, quién lo cuenta y qué falta saber. Noticias comparadas, contexto y debate.">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mirador">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Concepto: sala de lectura cívica. Una columna de lectura con una barra lateral de contexto;
+   el papel es frío y quieto, la tinta azul-negra, y el único acento es el azul de lago de Mirador.
+   El amarillo de resaltador solo marca lo que se copió literal de un extracto (cifras y citas). */
+:root {
+  --paper: #f3f5f2;
+  --surface: #ffffff;
+  --surface-2: #eaeee9;
+  --ink: #17212a;
+  --ink-2: #47525d;
+  --ink-3: #66717c;
+  --rule: #d6dcd6;
+  --accent: #1d5a72;
+  --accent-ink: #ffffff;
+  --accent-soft: #e1ecf0;
+  --mark: #f4e7a8;
+  --chart: #2a78d6;
+  --t-analisis: #33569c;
+  --t-opinion: #8c5310;
+  --t-verif: #2d6a3c;
+  --t-vivo: #a3352c;
+  --t-otro: #5b4d86;
+  --warn: #8c5310;
+  --bad: #a3352c;
+  --good: #2d6a3c;
+  --f-display: "Newsreader", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --f-ui: "Public Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --s-1: 0.25rem; --s-2: 0.5rem; --s-3: 0.75rem; --s-4: 1rem; --s-5: 1.5rem; --s-6: 2rem; --s-7: 3rem;
+  --r: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10161b; --surface: #172028; --surface-2: #1d2831; --ink: #e5e9ec; --ink-2: #b2bcc5; --ink-3: #8e99a4;
+    --rule: #2b3640; --chart: #3987e5; --accent: #86bdd2; --accent-ink: #0d1a20; --accent-soft: #1b3440; --mark: #5c4f1f;
+    --t-analisis: #9db5ec; --t-opinion: #e3b06d; --t-verif: #8fcf9f; --t-vivo: #f19c93; --t-otro: #c1b4ee;
+    --warn: #e3b06d; --bad: #f19c93; --good: #8fcf9f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10161b; --surface: #172028; --surface-2: #1d2831; --ink: #e5e9ec; --ink-2: #b2bcc5; --ink-3: #8e99a4;
+  --rule: #2b3640; --chart: #3987e5; --accent: #86bdd2; --accent-ink: #0d1a20; --accent-soft: #1b3440; --mark: #5c4f1f;
+  --t-analisis: #9db5ec; --t-opinion: #e3b06d; --t-verif: #8fcf9f; --t-vivo: #f19c93; --t-otro: #c1b4ee;
+  --warn: #e3b06d; --bad: #f19c93; --good: #8fcf9f; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--paper); color: var(--ink); font: 15px/1.5 var(--f-ui); margin: 0; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+.wrap { max-width: 1140px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* cabecera */
+.mast { padding-block: var(--s-5) var(--s-3); display: flex; flex-wrap: wrap; align-items: end; gap: var(--s-2) var(--s-5); justify-content: space-between; }
+.brand { display: flex; align-items: baseline; gap: var(--s-3); flex-wrap: wrap; }
+.brand h1 { font: 600 2rem/1 var(--f-display); letter-spacing: -0.01em; margin: 0; }
+.brand .tag { font: 400 0.95rem/1.3 var(--f-display); font-style: italic; color: var(--ink-2); }
+.edition { font: 400 0.78rem/1.4 var(--f-mono); color: var(--ink-3); text-align: right; }
+.edition b { color: var(--ink-2); font-weight: 500; }
+@media (max-width: 640px) { .edition { text-align: left; } .brand h1 { font-size: 1.7rem; } }
+nav.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); }
+nav.tabs .wrap { display: flex; gap: var(--s-1); overflow-x: auto; scrollbar-width: none; }
+nav.tabs a { flex: none; padding: var(--s-3) var(--s-3) calc(var(--s-3) - 2px); color: var(--ink-2); text-decoration: none; font-weight: 500; font-size: 0.92rem; border-bottom: 2px solid transparent; }
+nav.tabs a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+main { padding-block: var(--s-5) var(--s-7); min-height: 60vh; }
+
+/* tipografía */
+h2.view { font: 600 1.85rem/1.15 var(--f-display); margin: 0 0 var(--s-2); text-wrap: balance; letter-spacing: -0.01em; }
+.lede { font: 400 1.05rem/1.55 var(--f-display); color: var(--ink-2); margin: 0 0 var(--s-5); max-width: 68ch; }
+h3.sec { font: 600 0.74rem/1 var(--f-ui); letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-3); margin: var(--s-6) 0 var(--s-3); display: flex; gap: var(--s-2); align-items: center; }
+h3.sec::after { content: ""; flex: 1; border-top: 1px solid var(--rule); }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--ink-3); }
+.small { font-size: 0.85rem; }
+.note { font-size: 0.85rem; color: var(--ink-2); background: var(--surface-2); border-radius: var(--r); padding: var(--s-3) var(--s-4); margin: var(--s-3) 0; max-width: 78ch; }
+.note b { color: var(--ink); }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-6); }
+@media (min-width: 980px) { .layout { grid-template-columns: minmax(0, 1fr) 300px; } }
+.rail > * + * { margin-top: var(--s-5); }
+
+/* controles */
+.chips { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: 0 0 var(--s-4); }
+.chip { border: 1px solid var(--rule); background: var(--surface); color: var(--ink-2); border-radius: 999px; padding: 0.3rem 0.75rem; font-size: 0.85rem; cursor: pointer; line-height: 1.3; }
+.chip:hover { border-color: var(--ink-3); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.seg { display: inline-flex; flex-wrap: wrap; max-width: 100%; border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; margin-bottom: var(--s-3); }
+.seg button { border: 0; background: var(--surface); padding: 0.4rem 0.9rem; cursor: pointer; font-size: 0.88rem; color: var(--ink-2); }
+.seg button + button { border-left: 1px solid var(--rule); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.btn { border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); border-radius: var(--r); padding: 0.45rem 0.95rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn.quiet { background: transparent; border-color: var(--rule); color: var(--ink-2); font-weight: 500; }
+.btn:disabled { opacity: 0.55; cursor: progress; }
+.field { display: grid; gap: var(--s-1); }
+.field label { font-size: 0.8rem; font-weight: 600; color: var(--ink-2); }
+input[type="text"], input[type="url"], input[type="search"], input[type="date"], input[type="number"], select, textarea {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: 0.5rem 0.65rem; width: 100%; min-width: 0;
+}
+textarea { min-height: 5.5rem; resize: vertical; font: 400 0.98rem/1.5 var(--f-display); }
+.row { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: end; }
+.row > .grow { flex: 1 1 240px; min-width: 0; }
+.formgrid { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-bottom: var(--s-4); }
+
+/* acontecimientos */
+.brief { list-style: none; margin: 0; padding: 0; counter-reset: b; }
+.brief > li { counter-increment: b; display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: var(--s-3); padding: var(--s-4) 0; border-top: 1px solid var(--rule); }
+.brief > li::before { content: counter(b); font: 500 1.5rem/1 var(--f-display); color: var(--ink-3); padding-top: 0.15rem; }
+.ev-title { font: 600 1.28rem/1.25 var(--f-display); margin: 0 0 var(--s-1); text-wrap: balance; }
+.ev-title a { color: var(--ink); text-decoration: none; }
+.ev-title a:hover { text-decoration: underline; text-decoration-color: var(--accent); }
+.ev-meta { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); font: 400 0.78rem/1.4 var(--f-mono); color: var(--ink-3); margin-bottom: var(--s-2); }
+.ev-meta .dev { color: var(--t-vivo); }
+.ev-outlets { font-size: 0.85rem; color: var(--ink-2); }
+.ev-items { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: var(--s-2); }
+.ev-items li { font: 400 0.98rem/1.4 var(--f-display); }
+.ev-items .src { font: 600 0.75rem/1 var(--f-ui); color: var(--ink-2); margin-right: var(--s-2); text-transform: uppercase; letter-spacing: 0.04em; }
+.evlist { list-style: none; margin: 0; padding: 0; }
+.evlist > li { padding: var(--s-4) 0; border-top: 1px solid var(--rule); }
+.grid-ev { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: var(--s-4); min-width: 0; }
+.card .ev-title { font-size: 1.1rem; }
+.empty { padding: var(--s-5); border: 1px dashed var(--rule); border-radius: var(--r); color: var(--ink-2); background: var(--surface); }
+.empty b { color: var(--ink); }
+
+/* etiquetas de tipo y acceso */
+.ty { display: inline-block; font: 600 0.68rem/1 var(--f-ui); letter-spacing: 0.06em; text-transform: uppercase; padding: 0.22rem 0.42rem; border-radius: 3px; border: 1px solid currentColor; vertical-align: 0.1em; }
+.ty-noticia { color: var(--ink-3); }
+.ty-análisis { color: var(--t-analisis); }
+.ty-opinión { color: var(--t-opinion); }
+.ty-verificación { color: var(--t-verif); }
+.ty-en-vivo { color: var(--t-vivo); }
+.ty-video, .ty-podcast, .ty-investigación { color: var(--t-otro); }
+.acc { font: 500 0.72rem/1 var(--f-ui); color: var(--warn); }
+
+/* artículos */
+.alist { list-style: none; margin: 0; padding: 0; }
+.alist > li { padding: var(--s-4) 0; border-top: 1px solid var(--rule); display: grid; gap: var(--s-1); }
+.a-head { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); align-items: center; font-size: 0.8rem; color: var(--ink-3); }
+.a-head .out { font-weight: 700; color: var(--ink-2); }
+.a-title { font: 500 1.12rem/1.3 var(--f-display); margin: 0; }
+.a-title a { color: var(--ink); }
+.a-ex { font: 400 0.97rem/1.5 var(--f-display); color: var(--ink-2); margin: 0; max-width: 72ch; }
+.a-ex .lbl { font: 600 0.68rem/1 var(--f-ui); letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); margin-right: var(--s-2); }
+.a-actions { display: flex; flex-wrap: wrap; gap: var(--s-3); font-size: 0.85rem; }
+.linkbtn { background: none; border: 0; color: var(--accent); cursor: pointer; padding: 0; font-size: 0.85rem; text-decoration: underline; text-underline-offset: 2px; }
+
+/* comparación */
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; margin: var(--s-4) 0; }
+.facts div { background: var(--surface); padding: var(--s-3) var(--s-4); }
+.facts b { display: block; font: 500 1.35rem/1.1 var(--f-display); }
+.facts span { font-size: 0.78rem; color: var(--ink-3); }
+.timeline { list-style: none; margin: 0; padding: 0; position: relative; }
+.timeline > li { display: grid; grid-template-columns: 7.2rem minmax(0, 1fr); gap: var(--s-4); padding: var(--s-4) 0; border-top: 1px solid var(--rule); }
+@media (max-width: 560px) { .timeline > li { grid-template-columns: minmax(0, 1fr); gap: var(--s-1); } }
+.timeline time { font: 400 0.78rem/1.4 var(--f-mono); color: var(--ink-3); }
+.terms { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: var(--s-2) 0 var(--s-3); }
+.term { font: 400 0.85rem/1.2 var(--f-mono); background: var(--surface-2); padding: 0.25rem 0.5rem; border-radius: 3px; }
+.term.shared { background: var(--accent-soft); color: var(--ink); }
+.cmp-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.cmp-table th, .cmp-table td { text-align: left; vertical-align: top; padding: var(--s-3); border-top: 1px solid var(--rule); }
+.cmp-table th { font-weight: 700; width: 11rem; color: var(--ink-2); }
+.scroll { overflow-x: auto; }
+mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius: 2px; }
+blockquote.q { margin: 0; padding: var(--s-2) var(--s-4); border-left: 3px solid var(--rule); font: italic 400 1rem/1.5 var(--f-display); }
+.quote-src { font-size: 0.8rem; color: var(--ink-3); margin-top: var(--s-1); }
+.stack > * + * { margin-top: var(--s-3); }
+
+/* mociones */
+.motion-text { font: 500 1.45rem/1.35 var(--f-display); margin: var(--s-3) 0; text-wrap: pretty; max-width: 62ch; }
+.slide { font: 400 1.02rem/1.6 var(--f-display); max-width: 70ch; }
+.slide p { margin: 0 0 var(--s-3); }
+.prov { font: 400 0.8rem/1.5 var(--f-mono); color: var(--ink-3); }
+.mlist { list-style: none; padding: 0; margin: 0; }
+.mlist li { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: var(--s-3); padding: var(--s-3) 0; border-top: 1px solid var(--rule); }
+@media (max-width: 560px) { .mlist li { grid-template-columns: minmax(0, 1fr); gap: var(--s-1); } }
+.mlist .rd { font: 400 0.78rem/1.4 var(--f-mono); color: var(--ink-3); }
+.mlist a.mt { color: var(--ink); font: 400 1.02rem/1.4 var(--f-display); text-decoration: none; }
+.mlist a.mt:hover { text-decoration: underline; }
+.bars { display: grid; gap: var(--s-2); max-width: 520px; }
+.bar { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) 3rem; align-items: center; gap: var(--s-2); font-size: 0.85rem; }
+.bar .track { height: 14px; position: relative; background: linear-gradient(to right, var(--rule) 1px, transparent 1px) 0 0 / 33.333% 100%; border-left: 1px solid var(--ink-3); }
+.bar .fill { position: absolute; inset: 3px auto 3px 0; background: var(--chart); border-radius: 0 4px 4px 0; }
+.bar .v { font-family: var(--f-mono); text-align: right; }
+.axis { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) 3rem; gap: var(--s-2); font: 400 0.7rem/1 var(--f-mono); color: var(--ink-3); max-width: 520px; }
+.axis div { display: flex; justify-content: space-between; }
+.dist { border-collapse: collapse; font-size: 0.85rem; margin-top: var(--s-3); }
+.dist th, .dist td { padding: 0.35rem 0.7rem; border-top: 1px solid var(--rule); text-align: right; font-variant-numeric: tabular-nums; }
+.dist th:first-child, .dist td:first-child { text-align: left; }
+.prep-grid { display: grid; gap: var(--s-4); }
+.prep-sec { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: var(--s-4); }
+.prep-sec h4 { margin: 0 0 var(--s-2); font: 600 1.02rem/1.3 var(--f-display); }
+.prep-sec .hint { font-size: 0.82rem; color: var(--ink-3); margin: 0 0 var(--s-2); }
+.pos4 { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.savestate { font: 400 0.78rem/1 var(--f-mono); color: var(--ink-3); }
+.biblio { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.biblio td, .biblio th { border-top: 1px solid var(--rule); padding: 0.4rem; text-align: left; vertical-align: top; }
+
+/* fuentes */
+.src-out { padding: var(--s-4) 0; border-top: 1px solid var(--rule); }
+.src-out h4 { margin: 0; font: 600 1.05rem/1.3 var(--f-display); display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: baseline; }
+.feed { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-2) var(--s-4); padding: var(--s-2) 0 0 var(--s-4); font-size: 0.86rem; }
+.feed .st { font: 400 0.76rem/1.4 var(--f-mono); color: var(--ink-3); overflow-wrap: anywhere; }
+.dot { display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%; margin-right: 0.35rem; vertical-align: 0.05em; }
+.dot.ok { background: var(--good); } .dot.err { background: var(--bad); } .dot.off { background: var(--ink-3); }
+.toggle { display: inline-flex; gap: var(--s-2); align-items: center; font-size: 0.85rem; cursor: pointer; }
+.dirlist { columns: 2 260px; column-gap: var(--s-6); }
+.dirlist section { break-inside: avoid; margin-bottom: var(--s-4); }
+.dirlist h4 { margin: 0 0 var(--s-1); font: 600 0.78rem/1.2 var(--f-ui); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+.dirlist ul { margin: 0; padding: 0; list-style: none; }
+.dirlist li { padding: 0.15rem 0; font-size: 0.9rem; }
+
+/* estados */
+.skel { display: grid; gap: var(--s-3); }
+.skel i { display: block; height: 1rem; border-radius: 3px; background: linear-gradient(90deg, var(--surface-2), var(--rule), var(--surface-2)); background-size: 200% 100%; animation: sh 1.4s infinite linear; }
+@keyframes sh { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .skel i { animation: none; } }
+.banner { border: 1px solid var(--rule); border-left: 4px solid var(--accent); background: var(--surface); border-radius: var(--r); padding: var(--s-4); margin-bottom: var(--s-4); }
+.banner.err { border-left-color: var(--bad); }
+#toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(var(--s-4) + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--paper); padding: 0.55rem 1rem; border-radius: var(--r); font-size: 0.9rem; z-index: 20; max-width: calc(100% - 32px); }
+.method p, .method li { max-width: 72ch; font: 400 1.02rem/1.6 var(--f-display); }
+.method h3 { font: 600 1.2rem/1.3 var(--f-display); margin: var(--s-5) 0 var(--s-2); }
+details > summary { cursor: pointer; color: var(--accent); font-size: 0.88rem; }
+
+/* fase 2: semana, hilos, revisiones */
+.storybadge { font: 500 0.78rem/1.4 var(--f-ui); color: var(--accent); text-decoration: none; border: 1px solid var(--accent-soft); background: var(--accent-soft); border-radius: 3px; padding: 0.05rem 0.4rem; }
+.daybars { display: grid; gap: 6px; max-width: 560px; margin: var(--s-3) 0; }
+.daybar { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr) 3.2rem; gap: var(--s-2); align-items: center; font-size: 0.82rem; }
+.daybar .lbl { color: var(--ink-2); font-family: var(--f-mono); font-size: 0.76rem; }
+.daybar .track { height: 14px; position: relative; border-left: 1px solid var(--ink-3); }
+.daybar .fill { position: absolute; inset: 1px auto 1px 0; background: var(--chart); border-radius: 0 4px 4px 0; min-width: 2px; }
+.daybar:hover .fill, .daybar:focus-visible .fill { filter: brightness(1.15); }
+.daybar .v { font-family: var(--f-mono); font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 0.76rem; }
+.storyline { list-style: none; margin: var(--s-2) 0 0; padding: 0 0 0 var(--s-4); border-left: 2px solid var(--rule); display: grid; gap: var(--s-2); }
+.storyline li { position: relative; font: 400 0.98rem/1.4 var(--f-display); }
+.storyline li::before { content: ""; position: absolute; left: calc(-1 * var(--s-4) - 5px); top: 0.45rem; width: 8px; height: 8px; border-radius: 50%; background: var(--paper); border: 2px solid var(--ink-3); }
+.storyline time { display: block; font: 400 0.74rem/1.3 var(--f-mono); color: var(--ink-3); }
+.delta { font-family: var(--f-mono); font-size: 0.8rem; }
+.rev { padding: var(--s-3) 0; border-top: 1px solid var(--rule); }
+.rev del { color: var(--ink-3); text-decoration-color: var(--bad); }
+.rev ins { text-decoration: none; background: var(--accent-soft); padding: 0 0.15em; border-radius: 2px; }
+/* fase 3: expedientes, contexto, conocimiento */
+.kbadge { display: inline-block; font: 600 0.68rem/1 var(--f-ui); letter-spacing: 0.05em; text-transform: uppercase; padding: 0.22rem 0.42rem; border-radius: 3px; background: var(--ink); color: var(--paper); }
+.kbadge.art { background: transparent; color: var(--ink-3); border: 1px solid var(--rule); }
+.chron > li.hito { background: var(--surface); border-left: 3px solid var(--ink); padding-left: var(--s-3); }
+.inline-form { background: var(--surface-2); border-radius: var(--r); padding: var(--s-3); margin-top: var(--s-2); display: grid; gap: var(--s-2); max-width: 640px; }
+.inline-form .formgrid { margin: 0; }
+.lvl { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+.lvl section { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: var(--s-3) var(--s-4); }
+.lvl h5 { margin: 0 0 var(--s-2); font: 600 0.74rem/1 var(--f-ui); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.lvl ol { margin: 0; padding-left: 1.1rem; display: grid; gap: var(--s-2); font: 400 0.97rem/1.45 var(--f-display); }
+.topic { border-top: 1px solid var(--rule); padding: var(--s-4) 0; }
+.topic > summary { list-style: none; color: var(--ink); font: 600 1.2rem/1.3 var(--f-display); }
+.topic > summary::-webkit-details-marker { display: none; }
+.topic > summary::before { content: "+"; display: inline-block; width: 1.3rem; color: var(--ink-3); font-family: var(--f-mono); }
+.topic[open] > summary::before { content: "−"; }
+.topic .q { font: italic 400 1rem/1.5 var(--f-display); color: var(--ink-2); margin: var(--s-1) 0 var(--s-3) 1.3rem; }
+.srclist { list-style: none; margin: 0; padding: 0; }
+.srclist li { padding: var(--s-2) 0; border-top: 1px solid var(--rule); display: grid; gap: 2px; }
+.chk-ok { color: var(--good); font-size: 0.78rem; } .chk-no { color: var(--warn); font-size: 0.78rem; }
+.graphbox { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; }
+.graphbox svg { display: block; width: 100%; height: auto; touch-action: manipulation; }
+.graphbox .e-cat { stroke: var(--rule); stroke-width: 1; stroke-dasharray: 3 3; }
+.graphbox .e-link { stroke: var(--ink-3); stroke-width: 1.5; }
+.graphbox .n-m { fill: var(--surface); stroke: var(--ink-2); stroke-width: 1.5; }
+.graphbox .n-m.prep { fill: var(--accent-soft); stroke: var(--accent); }
+.graphbox .n-c { fill: var(--ink); stroke: var(--surface); stroke-width: 2; }
+.graphbox text { font: 500 10px var(--f-ui); fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+.graphbox a:hover .n-m, .graphbox a:focus .n-m { stroke-width: 3; }
+.graphbox a:hover .n-c, .graphbox a:focus .n-c { fill: var(--accent); }
+.legend { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); font-size: 0.8rem; color: var(--ink-2); margin: var(--s-2) 0; }
+.legend i { display: inline-block; width: 12px; height: 12px; vertical-align: -2px; margin-right: 4px; }
+.reuse { border: 1px solid var(--rule); border-radius: var(--r); background: var(--surface); padding: var(--s-3) var(--s-4); }
+.reuse + .reuse { margin-top: var(--s-3); }
+.reuse pre { white-space: pre-wrap; font: 400 0.92rem/1.45 var(--f-display); margin: var(--s-1) 0 var(--s-2); background: var(--surface-2); padding: var(--s-2) var(--s-3); border-radius: 4px; }
+.checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-1); }
+.checklist label { display: flex; gap: var(--s-2); align-items: baseline; font-size: 0.92rem; cursor: pointer; }
+/* fase 4: entrenamiento */
+.timer { font: 500 clamp(3rem, 14vw, 5.5rem)/1 var(--f-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin: var(--s-2) 0; }
+.timer.over { color: var(--bad); }
+.tphase { font: 600 0.9rem/1.3 var(--f-ui); min-height: 1.3em; }
+.tphase.poi { color: var(--good); } .tphase.prot { color: var(--ink-2); } .tphase.end { color: var(--bad); }
+.ttrack { position: relative; height: 12px; background: var(--surface-2); border-radius: 6px; overflow: hidden; max-width: 560px; }
+.ttrack .zone { position: absolute; top: 0; bottom: 0; background: repeating-linear-gradient(135deg, var(--rule) 0 4px, transparent 4px 8px); }
+.ttrack .pos { position: absolute; top: 0; bottom: 0; left: 0; background: var(--chart); border-radius: 6px; }
+.tticks { position: relative; height: 1.1rem; max-width: 560px; font: 400 0.7rem/1 var(--f-mono); color: var(--ink-3); }
+.tticks span { position: absolute; transform: translateX(-50%); top: 3px; }
+.rubric { display: grid; gap: var(--s-4); }
+.rubric fieldset { border: 1px solid var(--rule); border-radius: var(--r); padding: var(--s-3) var(--s-4); margin: 0; background: var(--surface); min-width: 0; }
+.rubric legend { font: 600 1rem/1.3 var(--f-display); padding: 0 var(--s-1); }
+.rubric .scale { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: var(--s-2) 0; }
+.rubric .scale label { border: 1px solid var(--rule); border-radius: var(--r); padding: 0.35rem 0.7rem; cursor: pointer; font-family: var(--f-mono); }
+.rubric .scale input { position: absolute; opacity: 0; pointer-events: none; }
+.rubric .scale input:checked + span { font-weight: 700; }
+.rubric .scale label:has(input:checked) { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.rubric .scale label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sparks { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+.spark { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: var(--s-3); }
+.spark h5 { margin: 0; font: 600 0.8rem/1.3 var(--f-ui); color: var(--ink-2); }
+.spark .big { font: 500 1.5rem/1.1 var(--f-display); }
+.spark svg { display: block; width: 100%; height: 56px; overflow: visible; }
+.spark .ln { fill: none; stroke: var(--chart); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.spark .pt { fill: var(--chart); stroke: var(--surface); stroke-width: 2; }
+.spark .gr { stroke: var(--rule); stroke-width: 1; }
+#tip { position: fixed; z-index: 30; pointer-events: none; background: var(--ink); color: var(--paper); font-size: 0.8rem; padding: 0.35rem 0.55rem; border-radius: 4px; max-width: 260px; }
+#tip b { font-weight: 700; }
+</style>
+</head>
+<body>
+
+
+<header class="wrap mast">
+  <div class="brand">
+    <h1>Mirador</h1>
+    <span class="tag">Qué pasa, quién lo cuenta y qué falta saber</span>
+  </div>
+  <div class="edition" id="edition">Conectando…</div>
+</header>
+<nav class="tabs" aria-label="Secciones">
+  <div class="wrap">
+    <a href="#hoy" data-v="hoy">Hoy</a>
+    <a href="#semana" data-v="semana">Semana</a>
+    <a href="#colombia" data-v="colombia">Colombia</a>
+    <a href="#buscar" data-v="buscar">Buscar</a>
+    <a href="#expedientes" data-v="expedientes">Expedientes</a>
+    <a href="#contexto" data-v="contexto">Contexto</a>
+    <a href="#guardados" data-v="guardados">Guardados</a>
+    <a href="#mociones" data-v="mociones">Mociones</a>
+    <a href="#conocimiento" data-v="conocimiento">Conocimiento</a>
+    <a href="#entrenar" data-v="entrenar">Entrenar</a>
+    <a href="#fuentes" data-v="fuentes">Fuentes</a>
+    <a href="#metodo" data-v="metodo">Método</a>
+  </div>
+</nav>
+<main class="wrap" id="view" aria-live="polite">
+  <div class="skel" aria-label="Cargando"><i style="width:60%"></i><i></i><i style="width:85%"></i><i style="width:70%"></i></div>
+</main>
+<div id="toast" hidden></div>
+<div id="tip" hidden></div>
+
+<script>
+"use strict";
+const PROJECT = "xhtmlfvwdqoxndlafrxn";
+const SERVER = "Supabase";
+const TZ = "America/Bogota";
+
+const CATS = {
+  politica: "Política y democracia", colombia: "Colombia: política nacional", regional: "Política regional y local",
+  economia: "Economía y mercados", geopolitica: "Geopolítica y relaciones internacionales", conflictos: "Conflictos y seguridad",
+  ddhh: "Derechos humanos", ambiente: "Medioambiente y clima", ciencia: "Ciencia y tecnología", ia: "Inteligencia artificial",
+  salud: "Salud pública", sociedad: "Sociedad y cultura", latam: "América Latina", elecciones: "Elecciones y políticas públicas",
+};
+const MCATS = {
+  politica: "Política y democracia", rrii: "Relaciones internacionales y conflictos", economia: "Economía y desarrollo",
+  derecho: "Derecho y justicia", filosofia: "Filosofía moral y política", religion: "Religión y libertad de conciencia",
+  genero: "Feminismo, género e identidad", cultura: "Cultura, arte y patrimonio", tecnologia: "Tecnología e inteligencia artificial",
+  ambiente: "Medioambiente", educacion: "Educación", salud: "Salud", migracion: "Migración y derechos humanos",
+  medios: "Medios de comunicación", colombia: "Política pública colombiana", historia: "Historia y teoría social",
+};
+// Guía de método por disciplina (tomada de tu especificación)
+const METHOD = {
+  economia: "Economía: buscar datos, estudios empíricos, modelos y efectos distributivos.",
+  derecho: "Derecho: consultar normas, sentencias, doctrina y jurisdicción aplicable.",
+  rrii: "Política internacional: estudiar actores, incentivos, historia, instituciones y evidencia de conflictos comparables.",
+  filosofia: "Filosofía: explicar premisas normativas, teorías éticas y objeciones conceptuales.",
+  colombia: "Política pública: analizar implementación, viabilidad, costes, beneficiarios y efectos no previstos.",
+  politica: "Política pública: analizar implementación, viabilidad, costes, beneficiarios y efectos no previstos.",
+  educacion: "Política pública: analizar implementación, viabilidad, costes, beneficiarios y efectos no previstos.",
+  tecnologia: "Ciencia y tecnología: priorizar investigaciones originales, revisiones sistemáticas y límites de la evidencia.",
+  salud: "Ciencia y tecnología: priorizar investigaciones originales, revisiones sistemáticas y límites de la evidencia.",
+  ambiente: "Ciencia y tecnología: priorizar investigaciones originales, revisiones sistemáticas y límites de la evidencia.",
+  cultura: "Cultura y religión: incorporar contexto histórico, diversidad interna y las perspectivas de las comunidades involucradas.",
+  religion: "Cultura y religión: incorporar contexto histórico, diversidad interna y las perspectivas de las comunidades involucradas.",
+};
+const PREP = [
+  ["interpretacion", "Interpretación y delimitación del debate", "Qué se debate exactamente, qué queda fuera, carga de la prueba de cada bancada."],
+  ["conceptos", "Conceptos y teorías relevantes", "Definiciones operativas y marcos teóricos que hay que dominar."],
+  ["contexto", "Contexto histórico y situación actual", "Antecedentes y estado del asunto, con fecha de cada dato."],
+  ["actores", "Actores, incentivos, instituciones y relaciones de poder", "Quién gana, quién pierde, quién decide."],
+  ["gobierno", "Argumentos de Gobierno", ""],
+  ["oposicion", "Argumentos de Oposición", ""],
+  ["mecanismos", "Mecanismos causales completos", "Paso a paso: por qué A produce B, y bajo qué condiciones."],
+  ["evidencia", "Evidencia primaria, académica, estadística y periodística", "Anota de dónde sale cada dato; agrégalo también a la bibliografía."],
+  ["refutaciones", "Refutaciones y contraargumentos", ""],
+  ["impactos", "Comparación de impactos y escenarios alternativos", "Magnitud, probabilidad, reversibilidad, a quién afecta."],
+  ["estrategia", "Estrategias por posición", ""],
+  ["poi", "Preguntas de interrogatorio y posibles respuestas", ""],
+];
+const CO_TOPICS = [["todo","Todo"],["congreso","Congreso y leyes"],["justicia","Justicia y control"],["elecciones","Elecciones y partidos"],["seguridad","Seguridad y paz"],["economia","Economía"],["corrupcion","Corrupción y contratación"],["social","Salud, educación y pensiones"],["internacional","Relaciones exteriores"],["regiones","Regiones"]];
+const DEPTS = ["Amazonas","Antioquia","Arauca","Atlántico","Bogotá","Bolívar","Boyacá","Caldas","Caquetá","Casanare","Cauca","Cesar","Chocó","Córdoba","Cundinamarca","Guainía","Guaviare","Huila","La Guajira","Magdalena","Meta","Nariño","Norte de Santander","Putumayo","Quindío","Risaralda","San Andrés","Santander","Sucre","Tolima","Valle del Cauca","Vaupés","Vichada"];
+const COUNTRY = { CO:"Colombia", VE:"Venezuela", EC:"Ecuador", PE:"Perú", BR:"Brasil", AR:"Argentina", CL:"Chile", BO:"Bolivia", PY:"Paraguay", UY:"Uruguay", MX:"México", GT:"Guatemala", HN:"Honduras", SV:"El Salvador", NI:"Nicaragua", CR:"Costa Rica", PA:"Panamá", CU:"Cuba", DO:"Rep. Dominicana", HT:"Haití", PR:"Puerto Rico", US:"Estados Unidos", CA:"Canadá", GB:"Reino Unido", FR:"Francia", DE:"Alemania", ES:"España", IT:"Italia", PT:"Portugal", NL:"Países Bajos", BE:"Bélgica", PL:"Polonia", UA:"Ucrania", RU:"Rusia", TR:"Turquía", IL:"Israel", PS:"Palestina", LB:"Líbano", JO:"Jordania", SY:"Siria", IQ:"Irak", IR:"Irán", SA:"Arabia Saudita", AE:"Emiratos Árabes", QA:"Catar", YE:"Yemen", EG:"Egipto", CN:"China", TW:"Taiwán", JP:"Japón", KR:"Corea del Sur", KP:"Corea del Norte", IN:"India", PK:"Pakistán", AF:"Afganistán", ID:"Indonesia", PH:"Filipinas", AU:"Australia", ZA:"Sudáfrica", NG:"Nigeria", ET:"Etiopía", SD:"Sudán", CD:"RD Congo", KE:"Kenia", ML:"Malí", BF:"Burkina Faso", NE:"Níger", SN:"Senegal", MA:"Marruecos", DZ:"Argelia", LY:"Libia", GR:"Grecia", HU:"Hungría", RS:"Serbia", CY:"Chipre", AM:"Armenia", AZ:"Azerbaiyán", GE:"Georgia", MM:"Myanmar", TH:"Tailandia", VN:"Vietnam", BD:"Bangladés", SE:"Suecia", NO:"Noruega", FI:"Finlandia", DK:"Dinamarca", CH:"Suiza", AT:"Austria", IE:"Irlanda", QA2:"Catar" };
+const ACCESS = { suscripcion: "Suscripción", medido: "Muro medido", mixto: "Parte con suscripción", abierto: "" };
+const PRIMARY = [
+  ["Congreso y leyes", [["Senado de la República","https://www.senado.gov.co/"],["Cámara de Representantes","https://www.camara.gov.co/"],["Congreso Visible (Uniandes)","https://congresovisible.uniandes.edu.co/"],["Gaceta del Congreso","http://svrpubindc.imprenta.gov.co/senado/"],["Secretaría del Senado: leyes y códigos","http://www.secretariasenado.gov.co/"],["Diario Oficial (Imprenta Nacional)","https://www.imprenta.gov.co/"],["SUIN-Juriscol: normas vigentes","https://www.suin-juriscol.gov.co/"]]],
+  ["Justicia y control", [["Corte Constitucional: relatoría","https://www.corteconstitucional.gov.co/relatoria/"],["Consejo de Estado","https://www.consejodeestado.gov.co/"],["Fiscalía General","https://www.fiscalia.gov.co/"],["Procuraduría General","https://www.procuraduria.gov.co/"],["Contraloría General","https://www.contraloria.gov.co/"],["Defensoría del Pueblo","https://www.defensoria.gov.co/"]]],
+  ["Elecciones", [["Registraduría Nacional","https://www.registraduria.gov.co/"],["Consejo Nacional Electoral","https://www.cne.gov.co/"],["MOE: Misión de Observación Electoral","https://moe.org.co/"]]],
+  ["Economía y datos", [["DANE","https://www.dane.gov.co/"],["Banco de la República","https://www.banrep.gov.co/"],["Ministerio de Hacienda","https://www.minhacienda.gov.co/"],["Datos Abiertos Colombia","https://www.datos.gov.co/"]]],
+  ["Contratación pública", [["SECOP II","https://www.colombiacompra.gov.co/secop/secop-ii"],["Colombia Compra Eficiente","https://www.colombiacompra.gov.co/"]]],
+  ["Paz y memoria", [["JEP","https://www.jep.gov.co/"],["Comisión de la Verdad: informe final","https://www.comisiondelaverdad.co/"]]],
+  ["Gobierno", [["Presidencia de la República","https://www.presidencia.gov.co/"]]],
+  ["Datos internacionales", [["Banco Mundial: datos abiertos","https://data.worldbank.org/"],["FMI: datos","https://www.imf.org/en/Data"],["CEPAL","https://www.cepal.org/es"],["ACLED: datos de conflictos","https://acleddata.com/"]]],
+];
+const CKINDS = ["concepto", "teoría", "caso", "estudio", "actor", "institución", "fuente"];
+const DKINDS = ["anuncio", "texto original", "debate", "modificación", "votación", "decisión judicial", "reglamentación", "efecto documentado", "declaración", "dato oficial", "otro"];
+const POS = ["OG", "OO", "CG", "CO"];
+const SPEAKERS = { OG: ["Primer ministro", "Viceprimer ministro"], OO: ["Líder de la oposición", "Vicelíder de la oposición"], CG: ["Miembro de gobierno", "Látigo de gobierno"], CO: ["Miembro de oposición", "Látigo de oposición"] };
+// Rúbrica de autoevaluación: cuatro dimensiones que no se mezclan (tu especificación).
+const DIMS = [
+  ["argumentacion", "Calidad argumentativa", "¿Cada argumento tiene afirmación, mecanismo completo e impacto? ¿Lo comparé con lo mejor del otro lado?", ["Afirmaciones sin mecanismo", "", "Mecanismos completos, impactos sin comparar", "", "Mecanismos completos e impactos ponderados frente al rival"]],
+  ["conocimiento", "Conocimiento factual", "¿Los datos y ejemplos eran correctos, precisos y pertinentes? ¿Sabría decir de dónde salen?", ["Ejemplos vagos o equivocados", "", "Datos correctos pero genéricos", "", "Datos precisos, con fuente y fecha, que sostienen el mecanismo"]],
+  ["estrategia", "Estrategia de equipo", "¿Cumplí el rol de mi posición, fui coherente con mi banca y me distinguí de la otra mitad de la sala?", ["Contradice o repite a su banca", "", "Coherente, pero sin cumplir bien el rol", "", "Cumple el rol y gana el choque central"]],
+  ["oral", "Desempeño oral", "¿Se entendía la estructura? ¿Manejé el tiempo y los puntos de información?", ["Difícil de seguir o fuera de tiempo", "", "Claro, ritmo irregular", "", "Claro, señalizado, buen manejo de tiempo y POI"]],
+];
+// Listas de verificación por disciplina (derivadas de la guía de método de tu especificación).
+const CHECKS = {
+  economia: ["Datos oficiales recientes, con fecha", "Al menos un estudio empírico (no solo opinión)", "Modelo o mecanismo económico explícito", "Efectos distributivos: quién gana y quién pierde"],
+  derecho: ["Norma aplicable citada (número y artículo)", "Sentencias relevantes con número y fecha", "Doctrina o comentario académico", "Jurisdicción aplicable aclarada"],
+  rrii: ["Actores y sus incentivos", "Historia relevante de la relación o el conflicto", "Instituciones y reglas que aplican", "Casos comparables con evidencia"],
+  filosofia: ["Premisas normativas explícitas", "Teorías éticas en juego", "Objeciones conceptuales y respuestas"],
+  publica: ["Quién lo implementa y cómo", "Viabilidad política, fiscal e institucional", "Costes estimados, con fuente", "Beneficiarios identificados", "Efectos no previstos"],
+  ciencia: ["Investigación original consultada", "Revisión sistemática o metaanálisis, si existe", "Límites de la evidencia anotados"],
+  cultura: ["Contexto histórico", "Diversidad interna de la comunidad", "Perspectivas de las comunidades involucradas"],
+};
+const CHECK_NAMES = { economia: "Economía", derecho: "Derecho", rrii: "Política internacional", filosofia: "Filosofía", publica: "Política pública", ciencia: "Ciencia y tecnología", cultura: "Cultura y religión" };
+const CAT2DISC = { economia: ["economia"], derecho: ["derecho"], rrii: ["rrii"], filosofia: ["filosofia"], politica: ["publica"], colombia: ["publica"], educacion: ["publica"], migracion: ["publica", "derecho"], medios: ["publica"], genero: ["filosofia", "publica"], tecnologia: ["ciencia"], salud: ["ciencia", "publica"], ambiente: ["ciencia", "publica"], cultura: ["cultura"], religion: ["cultura", "filosofia"], historia: ["cultura"] };
+
+// ---------- utilidades ----------
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const norm = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const fmtAbs = (ts) => ts ? new Intl.DateTimeFormat("es-CO", { timeZone: TZ, day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }).format(new Date(ts)) : "";
+const fmtDay = (d) => new Intl.DateTimeFormat("es-CO", { timeZone: TZ, weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(d);
+const fmtTime = (d) => new Intl.DateTimeFormat("es-CO", { timeZone: TZ, hour: "numeric", minute: "2-digit" }).format(d);
+function ago(ts) {
+  if (!ts) return "";
+  const m = Math.round((Date.now() - new Date(ts).getTime()) / 60000);
+  if (m < 1) return "hace un momento";
+  if (m < 60) return `hace ${m} min`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `hace ${h} h`;
+  const d = Math.round(h / 24);
+  return `hace ${d} d`;
+}
+const plural = (n, a, b) => `${n} ${n === 1 ? a : b}`;
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 3200); }
+const lsGet = (k, d) => { try { const v = localStorage.getItem("mirador:" + k); return v == null ? d : JSON.parse(v); } catch { return d; } };
+const lsSet = (k, v) => { try { localStorage.setItem("mirador:" + k, JSON.stringify(v)); } catch { /* sin almacenamiento */ } };
+
+// ---------- acceso a datos ----------
+let SETTINGS = {};
+const READS = new Set(["status","home","daily","event","search","colombia","sources","saved_list","tournaments","motions","motion","request_result",
+  "weekly","story","dossiers","dossier","library","concepts","concept","graph","motion_knowledge","training_pick","training_list"]);
+const WRITES = new Set(["feed_toggle","outlet_hide","feed_add","ingest_now","settings_set","save","unsave","event_note","motion_tags","motion_prep","import_tabbycat",
+  "dossier_save","dossier_delete","dossier_item_save","dossier_item_delete","library_note","library_link_add","library_link_remove",
+  "concept_save","concept_delete","concept_link","concept_unlink","training_save","training_delete"]);
+const NOCACHE = new Set(["request_result", "training_pick"]);
+
+class ApiError extends Error { constructor(code, msg) { super(msg); this.code = code; } }
+
+// ---------- versión independiente: API pública con clave personal ----------
+const API_URL = "https://xhtmlfvwdqoxndlafrxn.supabase.co/functions/v1/mirador-api";
+const urlKey = new URLSearchParams(location.search).get("k");
+let KEY = (urlKey || lsGet("key", "") || "").trim();
+if (urlKey) lsSet("key", urlKey.trim());
+const apiCache = new Map();
+const sleep = (ms) => new Promise((ok) => setTimeout(ok, ms));
+async function api(op, params = {}, { fresh = false } = {}) {
+  if (!READS.has(op) && !WRITES.has(op)) throw new ApiError("bad_op", "Operación no permitida");
+  if (!KEY) throw new ApiError("no_key", "Falta tu clave de acceso.");
+  const ck = op + "|" + JSON.stringify(params);
+  const cacheable = READS.has(op) && !NOCACHE.has(op);
+  if (cacheable && !fresh) { const c = apiCache.get(ck); if (c && Date.now() - c.t < 45000) return c.v; }
+  let res;
+  for (let i = 0; ; i++) {
+    try {
+      res = await fetch(API_URL, { method: "POST", headers: { "content-type": "application/json", "x-mirador-key": KEY }, body: JSON.stringify({ op, p: params }) });
+      if (res.status >= 500 && READS.has(op) && i < 1) { await sleep(1200); continue; }
+      break;
+    } catch (e) {
+      if (!READS.has(op) || i >= 1) throw new ApiError("network", navigator.onLine === false ? "Estás sin conexión a internet." : "El servidor no respondió.");
+      await sleep(1200);
+    }
+  }
+  let j = null;
+  try { j = await res.json(); } catch { /* sin cuerpo */ }
+  if (res.status === 403 && j && j.ro) setRO(true);
+  if (res.status === 401) throw new ApiError("bad_key", (j && j.error) || "La clave no es válida.");
+  if (!res.ok) throw new ApiError(res.status >= 500 ? "upstream_error" : "app", (j && j.error) || "Error " + res.status);
+  if (j && j.ro !== undefined) setRO(!!j.ro);
+  const r = j ? j.r : null;
+  if (r && r.error) throw new ApiError("app", r.error);
+  if (WRITES.has(op)) apiCache.clear(); else if (cacheable) apiCache.set(ck, { t: Date.now(), v: r });
+  return r;
+}
+let RO = false;
+function setRO(v) {
+  if (v === RO) return; RO = v;
+  let b = document.getElementById("robar");
+  if (v && !b) { b = document.createElement("div"); b.id = "robar"; b.className = "small"; b.style.cssText = "text-align:center;padding:.35rem .75rem;background:var(--paper-2,#e7ebe6);border-bottom:1px solid var(--line,#ccc)"; b.textContent = "Vista de solo lectura: puedes explorar todo, pero no guardar ni editar."; document.body.prepend(b); }
+  else if (!v && b) b.remove();
+}
+function keyForm() {
+  return `<div class="banner" style="max-width:560px"><p style="margin:0 0 .4rem"><b>Abre Mirador con tu enlace personal.</b></p>
+    <p class="small" style="margin:0 0 .8rem">Tu enlace termina en <span class="mono">?k=</span> seguido de una clave. Si lo perdiste, pega aquí solo la clave.</p>
+    <form id="kf" class="row"><div class="field grow"><label for="kk">Clave de acceso</label><input type="text" id="kk" autocomplete="off" autocapitalize="off" spellcheck="false"></div><button class="btn" type="submit">Entrar</button></form></div>`;
+}
+document.addEventListener("submit", (e) => {
+  if (e.target.id !== "kf") return;
+  e.preventDefault();
+  const v = $("#kk").value.trim().replace(/^.*[?&]k=/, "").replace(/[&#].*$/, "");
+  if (!v) return;
+  KEY = v; lsSet("key", v);
+  const u = new URL(location.href); u.searchParams.set("k", v); history.replaceState(null, "", u.toString());
+  boot();
+});
+function errorBox(e, retry) {
+  const code = e && e.code;
+  if (code === "no_key" || code === "bad_key") return (code === "bad_key" ? `<p class="small" style="color:var(--bad)">${esc(e.message)}</p>` : "") + keyForm();
+  let title = "No se pudo cargar esta sección.";
+  let body = esc(e && e.message);
+  if (code === "network") { title = "Sin conexión."; body = esc(e.message) + " Revisa tu conexión y vuelve a intentar."; }
+  else if (code === "upstream_error") { title = "Supabase no respondió a tiempo."; body = "Suele ser momentáneo. Si el proyecto estuvo 7 días sin uso, puede estar en pausa: reactívalo desde el panel de Supabase."; }
+  const id = "retry" + Math.random().toString(36).slice(2, 7);
+  setTimeout(() => { const b = document.getElementById(id); if (b && retry) b.onclick = retry; }, 0);
+  return `<div class="banner err" role="alert"><p style="margin:0 0 .4rem"><b>${esc(title)}</b></p><p class="small" style="margin:0 0 .6rem">${body}</p>${retry ? `<button class="btn quiet" id="${id}">Intentar de nuevo</button>` : ""}</div>`;
+}
+const skel = (n = 4) => `<div class="skel" aria-label="Cargando">${Array.from({ length: n }, (_, i) => `<i style="width:${[62, 100, 86, 74, 92][i % 5]}%"></i>`).join("")}</div>`;
+
+// ---------- piezas de interfaz ----------
+function outLink(a) {
+  const prefix = (SETTINGS.proxy_prefix || "").trim();
+  if (prefix && (a.access === "suscripcion" || a.access === "medido" || a.access === "mixto")) return prefix + a.url;
+  return a.url;
+}
+const tyChip = (t) => t && t !== "noticia" ? `<span class="ty ty-${esc(String(t).replace(/ /g, "-"))}">${esc(t)}</span>` : "";
+const accChip = (a) => ACCESS[a] ? `<span class="acc">${esc(ACCESS[a])}</span>` : "";
+const catName = (c) => CATS[c] || c;
+
+function eventMeta(ev) {
+  const parts = [];
+  parts.push(plural(ev.outlets, "medio", "medios"));
+  if (ev.outlets > 1) parts.push(plural(ev.sources, "fuente de origen", "fuentes de origen"));
+  if ((ev.outlet_countries || []).length > 1) parts.push(`medios de ${ev.outlet_countries.length} países`);
+  parts.push(`último ${ago(ev.last_seen)}`);
+  return `<div class="ev-meta">${parts.map((p) => `<span>${esc(p)}</span>`).join("")}${ev.developing ? `<span class="dev">● en desarrollo</span>` : ""}${storyBadge(ev)}</div>`;
+}
+function storyBadge(ev) {
+  if (!ev.story_id) return "";
+  return `<a class="storybadge" href="#hilo-${ev.story_id}" title="Hilo: ${esc(ev.story_title || "")}">Hilo de ${esc(plural(ev.story_events || 2, "acontecimiento", "acontecimientos"))}</a>`;
+}
+const uid = () => "u" + Math.random().toString(36).slice(2, 8);
+const fmtDate = (d) => d ? new Intl.DateTimeFormat("es-CO", { timeZone: "UTC", day: "numeric", month: "short", year: "numeric" }).format(new Date(String(d).slice(0, 10) + "T12:00:00Z")) : "";
+const fmtWeekday = (d) => new Intl.DateTimeFormat("es-CO", { timeZone: "UTC", weekday: "short", day: "numeric", month: "short" }).format(new Date(String(d).slice(0, 10) + "T12:00:00Z"));
+const fmtDayShort = (d) => new Intl.DateTimeFormat("es-CO", { timeZone: "UTC", weekday: "short", day: "numeric" }).format(new Date(String(d).slice(0, 10) + "T12:00:00Z")).replace(".", "").replace(",", "");
+const bogotaDay = (ts) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date(ts));
+// tooltip único para marcas de gráficos ([data-tip]); el contenido también está en texto visible o en tabla
+function showTip(el, x, y) {
+  const t = $("#tip"); t.textContent = ""; const b = document.createElement("b"); b.textContent = el.dataset.tipv || ""; t.appendChild(b);
+  if (el.dataset.tip) t.appendChild(document.createTextNode(" " + el.dataset.tip));
+  t.hidden = false; const r = t.getBoundingClientRect();
+  t.style.left = Math.max(8, Math.min(window.innerWidth - r.width - 8, x + 12)) + "px"; t.style.top = Math.max(8, y - r.height - 10) + "px";
+}
+document.addEventListener("pointermove", (e) => { const el = e.target.closest && e.target.closest("[data-tipv]"); if (el) showTip(el, e.clientX, e.clientY); else $("#tip").hidden = true; });
+document.addEventListener("focusin", (e) => { const el = e.target.closest && e.target.closest("[data-tipv]"); if (el) { const r = el.getBoundingClientRect(); showTip(el, r.left + r.width / 2, r.top); } else $("#tip").hidden = true; });
+function eventItem(ev, { items = 3 } = {}) {
+  const its = (ev.items || []).slice(0, items);
+  return `
+    <h4 class="ev-title"><a href="#evento-${ev.id}">${esc(ev.title)}</a></h4>
+    ${eventMeta(ev)}
+    <ul class="ev-items">${its.map((a) => `<li><span class="src">${esc(a.outlet_name)}</span>${tyChip(a.type)} <a href="${esc(outLink(a))}" target="_blank" rel="noopener">${esc(a.title)}</a></li>`).join("")}</ul>
+    ${ev.outlets > items ? `<p class="ev-outlets" style="margin:.5rem 0 0">También: ${esc((ev.outlet_list || []).filter((n) => !its.some((a) => a.outlet_name === n)).join(", "))} · <a href="#evento-${ev.id}">Comparar coberturas</a></p>` : (ev.outlets > 1 ? `<p class="ev-outlets" style="margin:.5rem 0 0"><a href="#evento-${ev.id}">Comparar coberturas</a></p>` : "")}`;
+}
+function articleRow(a, { showExcerpt = true, extra = "" } = {}) {
+  return `<li>
+    <div class="a-head"><span class="out">${esc(a.outlet_name)}</span>${tyChip(a.type)}${accChip(a.access)}<span class="mono">${esc(fmtAbs(a.published_at))}${a.date_estimated ? " (fecha estimada)" : ""}</span>${a.agency ? `<span>Crédito: ${esc(a.agency)}</span>` : ""}</div>
+    <p class="a-title"><a href="${esc(outLink(a))}" target="_blank" rel="noopener">${esc(a.title)}</a></p>
+    ${showExcerpt && a.excerpt ? `<p class="a-ex"><span class="lbl">Extracto del feed</span>${esc(a.excerpt)}</p>` : ""}
+    <div class="a-actions">
+      <button class="linkbtn" data-save="${a.id}" data-saved="${a.saved ? 1 : 0}">${a.saved ? "Quitar de guardados" : "Guardar"}</button>
+      ${a.event_outlets > 1 ? `<a href="#evento-${a.event_id}">Ver ${a.event_outlets} medios sobre esto</a>` : ""}
+      ${archiveBtns(a.id)}
+      ${extra}
+    </div>
+  </li>`;
+}
+const archiveBtns = (id) => `<button class="linkbtn" data-dos="${id}">A un expediente</button><button class="linkbtn" data-cart="${id}">Enlazar concepto</button>`;
+// Formularios en línea: agregar un artículo como hito de un expediente, o enlazarlo a un concepto del grafo.
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-dos],[data-cart]");
+  if (!b) return;
+  const host = b.closest("li") || b.parentElement;
+  const open = host.querySelector(":scope > .inline-form");
+  if (open) { open.remove(); return; }
+  const aid = Number(b.dataset.dos || b.dataset.cart);
+  const f = document.createElement("form"); f.className = "inline-form"; f.innerHTML = skel(2);
+  host.appendChild(f);
+  const i = uid();
+  if (b.dataset.dos) {
+    let ds;
+    try { ds = (await api("dossiers")).dossiers || []; } catch (er) { f.innerHTML = `<p class="small" style="margin:0">${esc(er.message)}</p>`; return; }
+    f.innerHTML = `<div class="formgrid">
+        <div class="field"><label for="${i}d">Expediente</label><select id="${i}d">${ds.map((d) => `<option value="${d.id}">${esc(d.title)}</option>`).join("")}<option value="__new" ${ds.length ? "" : "selected"}>Nuevo expediente…</option></select></div>
+        <div class="field"><label for="${i}k">Tipo de hito</label><select id="${i}k">${DKINDS.map((k) => `<option>${k}</option>`).join("")}</select></div></div>
+      <div class="field" id="${i}nw" ${ds.length ? "hidden" : ""}><label for="${i}nt">Título del nuevo expediente</label><input type="text" id="${i}nt" placeholder="Reforma pensional"></div>
+      <div class="field"><label for="${i}n">Nota (opcional)</label><input type="text" id="${i}n"></div>
+      <div class="row"><button class="btn" type="submit">Agregar al expediente</button><span class="small" id="${i}st"></span></div>`;
+    $(`#${i}d`).onchange = (ev) => { $(`#${i}nw`).hidden = ev.target.value !== "__new"; };
+    f.onsubmit = async (ev) => {
+      ev.preventDefault();
+      const st = $(`#${i}st`);
+      try {
+        let did = $(`#${i}d`).value, title = $(`#${i}d`).selectedOptions[0].textContent;
+        if (did === "__new") {
+          title = $(`#${i}nt`).value.trim(); if (!title) { st.textContent = "Ponle un título."; return; }
+          did = (await api("dossier_save", { title })).id;
+        }
+        await api("dossier_item_save", { dossier_id: Number(did), article_id: aid, kind: $(`#${i}k`).value, note: $(`#${i}n`).value });
+        st.innerHTML = `Agregado a <a href="#expediente-${Number(did)}">${esc(title)}</a>`;
+      } catch (er) { st.textContent = er.message; }
+    };
+  } else {
+    let cs = [];
+    try { cs = (await api("concepts")).concepts || []; } catch { /* sin sugerencias */ }
+    f.innerHTML = `<div class="formgrid">
+        <div class="field"><label for="${i}c">Concepto, caso, estudio o actor</label><input type="text" id="${i}c" list="${i}l" placeholder="Soberanía"><datalist id="${i}l">${cs.map((c) => `<option value="${esc(c.name)}">${esc(c.kind)}</option>`).join("")}</datalist></div>
+        <div class="field"><label for="${i}k">Tipo</label><select id="${i}k">${CKINDS.map((k) => `<option>${k}</option>`).join("")}</select></div></div>
+      <div class="field"><label for="${i}n">Por qué se relaciona (opcional)</label><input type="text" id="${i}n"></div>
+      <div class="row"><button class="btn" type="submit">Enlazar</button><span class="small" id="${i}st"></span></div>`;
+    $(`#${i}c`).oninput = (ev) => { const m = cs.find((c) => c.name === ev.target.value); if (m) $(`#${i}k`).value = m.kind; };
+    f.onsubmit = async (ev) => {
+      ev.preventDefault();
+      const st = $(`#${i}st`); const name = $(`#${i}c`).value.trim();
+      if (!name) { st.textContent = "Escribe el nombre."; return; }
+      try {
+        const r = await api("concept_save", { name, kind: $(`#${i}k`).value, link: { article_id: aid, note: $(`#${i}n`).value } });
+        st.innerHTML = `Enlazado a <a href="#concepto-${Number(r.id)}">${esc(name)}</a>`;
+      } catch (er) { st.textContent = er.message; }
+    };
+  }
+});
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-save]");
+  if (!b) return;
+  const id = Number(b.dataset.save);
+  const saved = b.dataset.saved === "1";
+  b.disabled = true;
+  try {
+    if (saved) { await api("unsave", { article_id: id }); b.dataset.saved = "0"; b.textContent = "Guardar"; toast("Quitado de guardados"); }
+    else {
+      const col = lsGet("lastCollection", "General");
+      await api("save", { article_id: id, collection: col }); b.dataset.saved = "1"; b.textContent = "Quitar de guardados"; toast(`Guardado en «${col}»`);
+    }
+  } catch (err) { toast(err.message); }
+  b.disabled = false;
+});
+
+// ---------- vistas ----------
+const view = $("#view");
+const VIEWS = {};
+let renderSeq = 0;
+function setNav(name) {
+  document.querySelectorAll("nav.tabs a").forEach((a) => {
+    if (a.dataset.v === name) {
+      a.setAttribute("aria-current", "page");
+      const bar = a.parentElement, l = a.offsetLeft - bar.offsetLeft, r = l + a.offsetWidth;
+      if (l < bar.scrollLeft || r > bar.scrollLeft + bar.clientWidth) bar.scrollLeft = Math.max(0, l - 24);
+    } else a.removeAttribute("aria-current");
+  });
+}
+async function route() {
+  const h = (location.hash || "#hoy").slice(1);
+  const seq = ++renderSeq;
+  let name = h, arg = null;
+  const m = h.match(/^(evento|mocion|hilo|expediente|concepto|entrenar)-(\d+)$/);
+  if (m) { name = m[1]; arg = Number(m[2]); }
+  if (!VIEWS[name]) name = "hoy";
+  const parent = { evento: "hoy", mocion: "mociones", hilo: "semana", expediente: "expedientes", concepto: "conocimiento" };
+  setNav(parent[name] || name);
+  stopTimers();
+  $("#tip").hidden = true;
+  view.innerHTML = skel(5);
+  window.scrollTo({ top: 0 });
+  try { await VIEWS[name](arg, () => seq === renderSeq); }
+  catch (e) { if (seq === renderSeq) view.innerHTML = errorBox(e, route); }
+}
+window.addEventListener("hashchange", route);
+
+// ===== Hoy =====
+VIEWS.hoy = async (_a, alive) => {
+  const scope = lsGet("scope", "mundo");
+  const cat = lsGet("cat", null);
+  const [daily, home] = await Promise.all([api("daily"), api("home", { scope, category: cat, hours: 36, limit: 40 })]);
+  if (!alive()) return;
+  const topIds = new Set((daily.top || []).map((e) => e.id));
+  const rest = (home.events || []).filter((e) => !topIds.has(e.id));
+  const multi = rest.filter((e) => e.outlets > 1);
+  const single = rest.filter((e) => e.outlets === 1);
+  view.innerHTML = `
+    <div class="layout">
+      <div>
+        <h2 class="view">¿Qué está pasando?</h2>
+        <p class="lede">Los acontecimientos que más medios independientes están cubriendo ahora. El orden lo da la diversidad de fuentes y la frescura, nunca los clics.</p>
+        <h3 class="sec">Resumen del día · ${plural((daily.top || []).length, "historia", "historias")}</h3>
+        ${(daily.top || []).length ? `<ol class="brief">${daily.top.map((ev) => `<li><div>${eventItem(ev, { items: 4 })}</div></li>`).join("")}</ol>`
+          : `<div class="empty"><b>Todavía no hay historias cubiertas por dos o más medios en las últimas 24 horas.</b> Aparecerán cuando la ingesta agrupe las primeras coberturas.</div>`}
+        <p class="note">Este resumen no lo escribe una IA: cada línea es el titular que publicó el medio, con enlace al original. El titular de cada acontecimiento es el de uno de los medios que lo cubren.</p>
+
+        <h3 class="sec">Más acontecimientos</h3>
+        <div class="seg" role="group" aria-label="Ámbito">
+          ${[["mundo","Mundo"],["latam","América Latina"],["colombia","Colombia"]].map(([k, l]) => `<button data-scope="${k}" aria-pressed="${scope === k}">${l}</button>`).join("")}
+        </div>
+        <div class="chips" role="group" aria-label="Categorías">
+          <button class="chip" data-cat="" aria-pressed="${!cat}">Todas</button>
+          ${Object.entries(CATS).map(([k, l]) => `<button class="chip" data-cat="${k}" aria-pressed="${cat === k}">${esc(l)}</button>`).join("")}
+        </div>
+        ${multi.length ? `<div class="grid-ev">${multi.map((ev) => `<article class="card">${eventItem(ev, { items: 2 })}</article>`).join("")}</div>` : `<div class="empty">No hay más acontecimientos con varias fuentes para este filtro en las últimas 36 horas.</div>`}
+        ${single.length ? `<h3 class="sec">Cubierto por un solo medio</h3><ul class="alist">${single.slice(0, 15).map((ev) => articleRow(ev.items[0] || {}, { showExcerpt: false })).join("")}</ul>` : ""}
+      </div>
+      <aside class="rail">
+        <section>
+          <h3 class="sec" style="margin-top:0">Fuera de tus temas</h3>
+          <p class="small muted" style="margin-top:0">Historias con varias fuentes en categorías que no marcaste como prioritarias.</p>
+          ${(daily.discover || []).length ? daily.discover.map((ev) => `<div style="padding:.6rem 0;border-top:1px solid var(--rule)"><a href="#evento-${ev.id}" style="color:var(--ink);font:500 1rem/1.35 var(--f-display);text-decoration:none">${esc(ev.title)}</a><div class="ev-meta" style="margin:.25rem 0 0">${esc(plural(ev.outlets, "medio", "medios"))} · ${esc((ev.categories || []).map(catName).slice(0, 2).join(", "))}</div></div>`).join("") : `<p class="small">Nada por ahora.</p>`}
+        </section>
+        <section class="note" style="margin:0">
+          <b>Cómo leer las cifras.</b> «Medios» cuenta publicaciones distintas. «Fuentes de origen» cuenta una sola vez a los medios que firman con la misma agencia (AFP, EFE, Reuters…). Muchas publicaciones no equivalen a corroboración independiente.
+        </section>
+      </aside>
+    </div>`;
+  view.querySelectorAll("[data-scope]").forEach((b) => b.onclick = () => { lsSet("scope", b.dataset.scope); route(); });
+  view.querySelectorAll("[data-cat]").forEach((b) => b.onclick = () => { lsSet("cat", b.dataset.cat || null); route(); });
+};
+
+// ===== Acontecimiento: comparación de coberturas =====
+const NUM_RE = /(?:US\$|USD|COP|R\$|\$|€|£)?\s?\d{1,3}(?:[.,\s]\d{3})*(?:[.,]\d+)?\s?(?:%|por ciento|percent|per cent|millones|millón|mil millones|billones|million|billion|bn|personas|people|muertos|dead|heridos|injured|votos|votes|dólares|dollars|pesos|euros|km|kilómetros|toneladas|tonnes|años|years|días|days|soldados|troops|militares|mil\b)?/gi;
+const QUOTE_RE = /[“"«]([^”"»]{14,260})[”"»]/g;
+function extractFigures(text) {
+  const out = [];
+  for (const m of text.matchAll(NUM_RE)) {
+    const raw = m[0].trim();
+    const digits = raw.replace(/[^\d]/g, "");
+    if (!digits) continue;
+    const v = Number(digits);
+    const hasUnit = /[%$€£]|millon|million|billion|personas|people|muert|dead|herid|injur|voto|vote|dólar|dollar|peso|euro|km|tonel|tonne|años|years|días|days|soldad|troop|militar|mil\b|USD|COP/i.test(raw);
+    if (!hasUnit && (digits.length < 3 || (v >= 1900 && v <= 2100))) continue;
+    const s = Math.max(0, m.index - 70), e = Math.min(text.length, m.index + raw.length + 70);
+    out.push({ fig: raw, ctx: (s > 0 ? "…" : "") + text.slice(s, m.index), after: text.slice(m.index + raw.length, e) + (e < text.length ? "…" : "") });
+  }
+  return out.slice(0, 6);
+}
+function surfaceMap(arts) {
+  const map = new Map();
+  for (const a of arts) for (const w of `${a.title} ${a.excerpt || ""}`.split(/[^\p{L}\p{N}]+/u)) { const n = norm(w); if (n && !map.has(n)) map.set(n, w); }
+  return map;
+}
+VIEWS.evento = async (id, alive) => {
+  const d = await api("event", { id });
+  if (!alive()) return;
+  const ev = d.event;
+  const arts = d.articles || [];
+  const outlets = [...new Map(arts.map((a) => [a.outlet, a.outlet_name])).entries()];
+  const sm = surfaceMap(arts);
+  const show = (t) => t.startsWith("pais:") ? (COUNTRY[t.slice(5)] || t.slice(5)) : t.startsWith("#") ? t.slice(1) : (sm.get(t) || t);
+  // vocabulario por medio
+  const byOutlet = new Map();
+  for (const a of arts) { const s = byOutlet.get(a.outlet) || new Set(); (a.tokens || []).forEach((t) => s.add(t)); byOutlet.set(a.outlet, s); }
+  const count = new Map();
+  for (const s of byOutlet.values()) for (const t of s) count.set(t, (count.get(t) || 0) + 1);
+  const nO = byOutlet.size;
+  const sharedMin = nO <= 2 ? 2 : Math.ceil(nO * 0.5);
+  const shared = [...count.entries()].filter(([t, c]) => c >= sharedMin && !t.startsWith("pais:") && !t.startsWith("#")).sort((a, b) => b[1] - a[1]).map(([t]) => t).slice(0, 18);
+  const countriesShared = [...count.entries()].filter(([t]) => t.startsWith("pais:")).sort((a, b) => b[1] - a[1]).map(([t, c]) => `${show(t)} (${c}/${nO})`);
+  const uniq = outlets.map(([oid, name]) => [name, [...(byOutlet.get(oid) || [])].filter((t) => count.get(t) === 1 && !t.startsWith("pais:")).slice(0, 10)]);
+  // agencias
+  const agencies = {};
+  arts.forEach((a) => { if (a.agency) (agencies[a.agency] ||= new Set()).add(a.outlet_name); });
+  const agencyLines = Object.entries(agencies).map(([ag, s]) => `${[...s].join(", ")} ${s.size > 1 ? "publican" : "publica"} con crédito de ${ag}`);
+  const types = {};
+  arts.forEach((a) => { types[a.type] = (types[a.type] || 0) + 1; });
+  const langs = [...new Set(arts.map((a) => a.language).filter(Boolean))];
+  const figs = arts.map((a) => [a, extractFigures(`${a.title}. ${a.excerpt || ""}`)]).filter(([, f]) => f.length);
+  const quotes = [];
+  arts.forEach((a) => { for (const m of `${a.title} ${a.excerpt || ""}`.matchAll(QUOTE_RE)) quotes.push([a, m[1]]); });
+  const note = d.note || {};
+
+  view.innerHTML = `
+    <p class="small"><a href="#hoy">← Volver a Hoy</a></p>
+    <h2 class="view">${esc(ev.title)}</h2>
+    <p class="small muted" style="margin:0">Titular tomado de ${esc(d.title_outlet || "uno de los medios")}. ${d.developing ? `<b style="color:var(--t-vivo)">En desarrollo:</b> entró información nueva en las últimas 6 horas y esta vista puede cambiar.` : ""}</p>
+    <div class="facts">
+      <div><b class="mono">${ev.outlet_count}</b><span>medios</span></div>
+      <div><b class="mono">${ev.source_count}</b><span>fuentes de origen</span></div>
+      <div><b class="mono">${ev.article_count}</b><span>piezas</span></div>
+      <div><b class="mono">${langs.length}</b><span>${langs.length === 1 ? "idioma" : "idiomas"} (${esc(langs.join(", "))})</span></div>
+      <div><b class="mono" style="font-size:1rem">${esc(fmtAbs(ev.first_seen))}</b><span>primera publicación</span></div>
+    </div>
+    ${ev.outlet_count < 2 ? `<div class="note"><b>Solo un medio cubre esto por ahora.</b> No hay coberturas para comparar; si otros medios publican, aparecerán aquí.</div>` : ""}
+    ${d.story ? `<div class="banner"><b>Forma parte de un hilo.</b> Este acontecimiento comparte términos distintivos con otros ${esc(plural(d.story.events - 1, "acontecimiento", "acontecimientos"))} de los últimos días: <a href="#hilo-${d.story.id}">${esc(d.story.title)}</a>. El hilo se arma por reglas; revisa que de verdad sea la misma historia.</div>` : ""}
+    ${(d.concepts || []).length ? `<div class="terms">${d.concepts.map((c) => `<a class="term" href="#concepto-${c.id}" style="text-decoration:none;color:var(--ink)">${esc(c.name)} <span class="muted">· ${esc(c.kind)}</span></a>`).join("")}</div>` : ""}
+
+    <h3 class="sec">Cronología de las coberturas</h3>
+    <ol class="timeline">${arts.map((a) => `<li>
+      <time datetime="${esc(a.published_at)}">${esc(fmtAbs(a.published_at))}${a.date_estimated ? "<br>(estimada)" : ""}</time>
+      <div class="stack" style="--x:0">
+        <div class="a-head"><span class="out">${esc(a.outlet_name)}</span>${tyChip(a.type)}${accChip(a.access)}${a.agency ? `<span>Crédito: ${esc(a.agency)}</span>` : ""}${a.author ? `<span>${esc(a.author)}</span>` : ""}</div>
+        <p class="a-title" style="margin-top:.2rem"><a href="${esc(outLink(a))}" target="_blank" rel="noopener">${esc(a.title)}</a></p>
+        ${a.excerpt ? `<p class="a-ex"><span class="lbl">Extracto publicado por ${esc(a.outlet_name)}</span>${esc(a.excerpt)}</p>` : `<p class="a-ex muted small">El feed de este medio no publica extracto; abre el original.</p>`}
+        <div class="a-actions"><button class="linkbtn" data-save="${a.id}" data-saved="${a.saved ? 1 : 0}">${a.saved ? "Quitar de guardados" : "Guardar"}</button>${archiveBtns(a.id)}</div>
+      </div></li>`).join("")}</ol>
+
+    <h3 class="sec">Cambios en titulares y extractos</h3>
+    ${(d.revisions || []).length ? `<p class="small muted" style="margin-top:0">Mirador vuelve a leer cada feed cada 30 minutos. Cuando un medio cambia el titular o el extracto de una pieza ya publicada, guarda las dos versiones. Un cambio puede ser una corrección, una actualización o un ajuste de estilo: abre el original para saber cuál.</p>
+      ${d.revisions.map((r) => `<div class="rev"><div class="a-head"><span class="out">${esc(r.outlet)}</span><span class="mono">detectado ${esc(fmtAbs(r.seen_at))}</span></div>
+        ${r.old_title && r.new_title && r.old_title !== r.new_title ? `<p class="a-title" style="font-size:1rem"><del>${esc(r.old_title)}</del><br><ins>${esc(r.new_title)}</ins></p>` : `<p class="small" style="margin:.2rem 0">${esc(r.title)}</p>`}
+        ${r.old_excerpt !== r.new_excerpt && r.new_excerpt ? `<p class="a-ex small"><span class="lbl">Extracto antes</span><del>${esc(r.old_excerpt || "(vacío)")}</del></p><p class="a-ex small"><span class="lbl">Extracto ahora</span><ins>${esc(r.new_excerpt)}</ins></p>` : ""}</div>`).join("")}`
+      : `<p class="small muted" style="margin-top:0">Ningún medio ha cambiado el titular ni el extracto de estas piezas desde que Mirador las leyó.</p>`}
+
+    ${ev.outlet_count > 1 ? `
+    <h3 class="sec">Qué comparten y qué cambia</h3>
+    <p class="small muted" style="margin-top:0">Comparación automática del vocabulario de titulares y extractos. Muestra en qué se fija cada medio; no mide veracidad ni sesgo, y una palabra ausente en un extracto puede estar en el artículo completo.</p>
+    <div class="scroll"><table class="cmp-table">
+      <tr><th>Términos que comparten</th><td><div class="terms" style="margin:0">${shared.length ? shared.map((t) => `<span class="term shared">${esc(show(t))}</span>`).join("") : `<span class="muted">Los extractos no comparten vocabulario distintivo (puede pasar entre idiomas distintos).</span>`}</div></td></tr>
+      ${countriesShared.length ? `<tr><th>Países mencionados</th><td>${esc(countriesShared.join(" · "))}</td></tr>` : ""}
+      ${uniq.map(([name, ts]) => `<tr><th>Solo en ${esc(name)}</th><td><div class="terms" style="margin:0">${ts.length ? ts.map((t) => `<span class="term">${esc(show(t))}</span>`).join("") : `<span class="muted">Nada exclusivo.</span>`}</div></td></tr>`).join("")}
+      <tr><th>Tipo de pieza</th><td>${Object.entries(types).map(([t, n]) => `${tyChip(t) || "noticia"} ${n}`).join(" &nbsp; ")}</td></tr>
+      <tr><th>Independencia</th><td>${agencyLines.length ? esc(agencyLines.join(". ") + ".") + " Esas piezas cuentan como una sola fuente de origen." : "Ningún extracto muestra crédito de agencia. Ojo: muchos feeds no lo indican aunque el texto venga de una agencia."}</td></tr>
+    </table></div>` : ""}
+
+    <h3 class="sec">Cifras y citas en los extractos</h3>
+    ${figs.length || quotes.length ? `<div class="stack">
+      ${figs.map(([a, fs]) => `<div><div class="a-head"><span class="out">${esc(a.outlet_name)}</span></div>${fs.map((f) => `<p class="a-ex" style="margin:.2rem 0">${esc(f.ctx)}<mark>${esc(f.fig)}</mark>${esc(f.after)}</p>`).join("")}</div>`).join("")}
+      ${quotes.map(([a, q]) => `<div><blockquote class="q">«${esc(q)}»</blockquote><div class="quote-src">Entre comillas en el texto de ${esc(a.outlet_name)}. Verifica quién lo dijo en el original.</div></div>`).join("")}
+    </div>
+    <p class="small muted">Copiado literal de los extractos. Si dos medios dan cifras distintas, la diferencia es real en sus textos; consulta el original y, si existe, el documento oficial.</p>`
+    : `<p class="small muted">Los extractos no traen cifras ni citas textuales.</p>`}
+
+    <h3 class="sec">Mis notas y preguntas abiertas</h3>
+    <p class="small muted" style="margin-top:0">Lo que sigue sin confirmar, lo que falta saber y qué vas a monitorear. Esta vista no lo inventa: lo escribes tú.</p>
+    <div class="formgrid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))">
+      <div class="field"><label for="ev-note">Notas</label><textarea id="ev-note">${esc(note.note || "")}</textarea></div>
+      <div class="field"><label for="ev-q">Preguntas abiertas</label><textarea id="ev-q" placeholder="¿Qué dice el documento original? ¿Quién lo confirma además de la agencia?">${esc(note.questions || "")}</textarea></div>
+    </div>
+    <div class="row"><label class="toggle"><input type="checkbox" id="ev-follow" ${note.following !== false ? "checked" : ""}> Seguir este acontecimiento en Guardados</label><button class="btn" id="ev-save">Guardar notas</button><span class="savestate" id="ev-st"></span></div>
+
+    <div class="note" style="margin-top:var(--s-6)"><b>Lo que esta vista no hace.</b> No lee los artículos completos, no resume con IA y no decide quién tiene razón. La agrupación es automática y puede separar coberturas de un mismo hecho contadas con palabras distintas, sobre todo entre idiomas.</div>`;
+  $("#ev-save").onclick = async () => {
+    const b = $("#ev-save"); b.disabled = true;
+    try { await api("event_note", { event_id: id, note: $("#ev-note").value, questions: $("#ev-q").value, following: $("#ev-follow").checked }); $("#ev-st").textContent = "Guardado " + fmtTime(new Date()); }
+    catch (e) { $("#ev-st").textContent = e.message; }
+    b.disabled = false;
+  };
+};
+
+// ===== Semana: cómo evolucionaron los temas (conteos y agrupaciones; nada redactado) =====
+const showTerm = (t) => t.startsWith("pais:") ? (COUNTRY[t.slice(5)] || t.slice(5)) : t.replace(/^#/, "");
+function dayBars(days, { key = "articles", label = (x) => fmtDayShort(x.day), value = (x) => String(x[key]), tip = () => "", note = () => "" } = {}) {
+  const max = Math.max(1, ...days.map((x) => x[key] || 0));
+  return `<div class="daybars" role="list">${days.map((x) => `<div class="daybar" role="listitem" tabindex="0" data-tipv="${esc(plural(x[key], "pieza", "piezas"))}" data-tip="${esc(fmtWeekday(x.day) + (note(x) ? " (" + note(x) + ")" : "") + (tip(x) ? " · " + tip(x) : ""))}">
+    <span class="lbl">${esc(label(x))}</span><div class="track"><div class="fill" style="width:${((x[key] || 0) / max) * 100}%"></div></div><span class="v">${esc(value(x))}${note(x) ? "*" : ""}</span></div>`).join("")}</div>`;
+}
+VIEWS.semana = async (_a, alive) => {
+  const d = await api("weekly", { days: 7 });
+  if (!alive()) return;
+  const days = d.days || [];
+  const sinceDay = d.ingest_since ? bogotaDay(d.ingest_since) : null;
+  const today = bogotaDay(Date.now());
+  const cmp = !!d.previous_window_complete;
+  const cats = (d.categories || []).filter((c) => c.now > 0);
+  const ctry = (d.countries || []).filter((c) => c.now > 0);
+  const delta = (a, b) => { const x = a - b; return `<span class="delta">${x > 0 ? "+" : x < 0 ? "−" : "±"}${Math.abs(x)}</span>`; };
+  const stories = d.stories || [];
+  const rev = d.revisions || { count: 0, items: [] };
+  view.innerHTML = `
+    <div class="layout">
+      <div>
+        <h2 class="view">La semana</h2>
+        <p class="lede">Cómo evolucionaron los temas en los últimos 7 días: qué historias se encadenaron, cuáles siguen activas, qué cambió en la cobertura y qué dejaste pendiente. Todo son conteos y agrupaciones de lo que publicaron los medios; nada está redactado por una IA.</p>
+        ${sinceDay && sinceDay > days[0]?.day ? `<div class="note"><b>Semana incompleta.</b> Mirador empezó a leer feeds el ${esc(fmtDate(sinceDay))}. Los días anteriores solo incluyen lo que los feeds todavía mostraban ese día, así que los conteos de esos días están por debajo de lo que de verdad se publicó.</div>` : ""}
+
+        <h3 class="sec">Hilos de la semana · ${stories.length}</h3>
+        <p class="small muted" style="margin-top:0">Un hilo reúne acontecimientos distintos que comparten al menos dos términos distintivos (nombres, lugares, cifras) en días cercanos. Sirve para ver cómo avanzó una historia; la regla puede juntar cosas que solo se parecen.</p>
+        ${stories.length ? `<ul class="evlist">${stories.map((s) => `<li>
+            <h4 class="ev-title"><a href="#hilo-${s.id}">${esc(s.title)}</a></h4>
+            <div class="ev-meta"><span>${esc(plural(s.events, "acontecimiento", "acontecimientos"))}</span><span>${esc(plural(s.outlets, "medio", "medios"))}</span><span>${esc(fmtAbs(s.first_seen))} → ${esc(fmtAbs(s.last_seen))}</span>${s.active ? `<span class="dev">● activo en las últimas 24 h</span>` : `<span>sin piezas nuevas desde ${esc(ago(s.last_seen))}</span>`}</div>
+            <ol class="storyline">${(s.timeline || []).map((e) => `<li><time>${esc(fmtAbs(e.first_seen))} · ${esc(plural(e.outlets, "medio", "medios"))}</time><a href="#evento-${e.id}" style="color:var(--ink)">${esc(e.title)}</a></li>`).join("")}</ol></li>`).join("")}</ul>`
+          : `<div class="empty"><b>No hay hilos esta semana.</b> Aparecen cuando dos o más acontecimientos con varias fuentes comparten nombres o lugares en días cercanos.</div>`}
+
+        ${(d.continuing || []).length ? `<h3 class="sec">Siguen activos</h3>
+          <p class="small muted" style="margin-top:0">Empezaron hace más de 48 horas y siguen recibiendo piezas nuevas.</p>
+          <ul class="alist">${d.continuing.map((e) => `<li><p class="a-title"><a href="#evento-${e.id}" style="color:var(--ink)">${esc(e.title)}</a></p><div class="ev-meta" style="margin:0"><span>desde ${esc(fmtAbs(e.first_seen))}</span><span>${esc(plural(e.outlets, "medio", "medios"))}</span><span>${esc(plural(e.recent, "pieza nueva", "piezas nuevas"))} en 48 h</span>${e.story_id ? `<a class="storybadge" href="#hilo-${e.story_id}">Hilo</a>` : ""}</div></li>`).join("")}</ul>` : ""}
+
+        <h3 class="sec">Los más cubiertos, fuera de los hilos</h3>
+        ${(d.top || []).length ? `<div class="grid-ev">${d.top.map((ev) => `<article class="card">${eventItem(ev, { items: 2 })}</article>`).join("")}</div>` : `<p class="small muted">Nada con tres o más medios fuera de los hilos.</p>`}
+
+        <h3 class="sec">Qué cambió en la cobertura</h3>
+        ${cmp ? "" : `<p class="small muted" style="margin-top:0">La comparación con la semana anterior aparecerá cuando Mirador lleve dos semanas leyendo. Por ahora solo se muestra esta semana.</p>`}
+        <div class="formgrid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))">
+          <div class="scroll"><table class="dist" style="width:100%"><caption class="small muted" style="text-align:left">Piezas por categoría</caption>
+            <tr><th>Categoría</th><th>7 días</th>${cmp ? "<th>Semana anterior</th><th>Cambio</th>" : ""}</tr>
+            ${cats.map((c) => `<tr><td>${esc(catName(c.category))}</td><td>${c.now}</td>${cmp ? `<td>${c.before}</td><td>${delta(c.now, c.before)}</td>` : ""}</tr>`).join("")}</table></div>
+          <div class="scroll"><table class="dist" style="width:100%"><caption class="small muted" style="text-align:left">Países más mencionados</caption>
+            <tr><th>País</th><th>7 días</th>${cmp ? "<th>Semana anterior</th><th>Cambio</th>" : ""}</tr>
+            ${ctry.map((c) => `<tr><td>${esc(COUNTRY[c.country] || c.country)}</td><td>${c.now}</td>${cmp ? `<td>${c.before}</td><td>${delta(c.now, c.before)}</td>` : ""}</tr>`).join("")}</table></div>
+        </div>
+        <p class="small muted">Contar piezas mide atención de los medios, no importancia. Un tema puede ser decisivo y recibir poca cobertura.</p>
+
+        <h3 class="sec">Correcciones y cambios de titular · ${rev.count}</h3>
+        <p class="small muted" style="margin-top:0">Piezas ya publicadas cuyo titular o extracto cambió después. No cuenta las coberturas en vivo, que cambian por diseño${rev.live_count ? ` (${esc(plural(rev.live_count, "cambio", "cambios"))} en coberturas en vivo)` : ""}. Se muestran los 15 más recientes.</p>
+        ${(rev.items || []).length ? rev.items.map((r) => `<div class="rev"><div class="a-head"><span class="out">${esc(r.outlet)}</span><span class="mono">${esc(fmtAbs(r.seen_at))}</span>${r.event_id ? `<a href="#evento-${r.event_id}">ver acontecimiento</a>` : ""}</div>
+            ${r.old_title && r.new_title && r.old_title !== r.new_title ? `<p class="a-title" style="font-size:1rem"><del>${esc(r.old_title)}</del><br><ins><a href="${esc(r.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(r.new_title)}</a></ins></p>` : `<p class="small" style="margin:.2rem 0"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a> <span class="muted">(cambió el extracto)</span></p>`}</div>`).join("")
+          : `<p class="small muted" style="margin-top:0">Ningún medio cambió titulares ni extractos de piezas ya publicadas en estos días (o Mirador no alcanzó a verlo: solo detecta cambios mientras la pieza sigue en el feed).</p>`}
+      </div>
+      <aside class="rail">
+        <section>
+          <h3 class="sec" style="margin-top:0">Volumen por día</h3>
+          <p class="small muted" style="margin:0">Piezas publicadas por día (hora de Bogotá).</p>
+          ${dayBars(days, { tip: (x) => plural(x.events, "acontecimiento nuevo", "acontecimientos nuevos") + " con 2+ medios", note: (x) => x.day === today ? "hasta ahora" : sinceDay && x.day < sinceDay ? "parcial" : "" })}
+          <p class="small muted" style="margin:0">* Día parcial o en curso.</p>
+          <details><summary>Ver como tabla</summary><div class="scroll"><table class="dist" style="width:100%">
+            <tr><th>Día</th><th>Piezas</th><th>Acontecimientos nuevos (2+ medios)</th></tr>
+            ${days.map((x) => `<tr><td>${esc(fmtDayShort(x.day))}</td><td>${x.articles}</td><td>${x.events}</td></tr>`).join("")}</table></div></details>
+        </section>
+        <section>
+          <h3 class="sec">Lo que sigues</h3>
+          ${(d.following || []).length ? d.following.map((f) => `<div style="padding:.6rem 0;border-top:1px solid var(--rule)"><a href="#evento-${f.id}" style="color:var(--ink);font:500 1rem/1.35 var(--f-display);text-decoration:none">${esc(f.title)}</a>
+              <div class="ev-meta" style="margin:.25rem 0 0"><span>${esc(plural(f.new_since_note, "pieza nueva", "piezas nuevas"))} desde tu nota</span></div>
+              ${f.questions ? `<p class="a-ex small" style="margin:.2rem 0 0"><span class="lbl">Pendiente</span>${esc(f.questions)}</p>` : ""}</div>`).join("")
+            : `<p class="small muted" style="margin-top:0">Marca «Seguir este acontecimiento» en cualquier comparación y aquí verás lo que dejaste pendiente.</p>`}
+        </section>
+      </aside>
+    </div>`;
+};
+
+// ===== Hilo =====
+VIEWS.hilo = async (id, alive) => {
+  const d = await api("story", { id });
+  if (!alive()) return;
+  const s = d.story, evs = d.events || [], days = d.days || [];
+  const terms = (d.shared_terms || []).filter((t) => !t.startsWith("pais:")).slice(0, 16);
+  const ctys = (d.shared_terms || []).filter((t) => t.startsWith("pais:")).map(showTerm);
+  view.innerHTML = `
+    <p class="small"><a href="#semana">← La semana</a></p>
+    <h2 class="view">${esc(s.title)}</h2>
+    <p class="small muted" style="margin:0">Hilo de acontecimientos relacionados. El titular es el del acontecimiento con más medios.</p>
+    <div class="facts">
+      <div><b class="mono">${s.event_count}</b><span>acontecimientos</span></div>
+      <div><b class="mono">${s.outlet_count}</b><span>medios</span></div>
+      <div><b class="mono">${s.article_count}</b><span>piezas</span></div>
+      <div><b class="mono" style="font-size:1rem">${esc(fmtAbs(s.first_seen))}</b><span>primera pieza</span></div>
+      <div><b class="mono" style="font-size:1rem">${esc(fmtAbs(s.last_seen))}</b><span>última pieza</span></div>
+    </div>
+    <div class="layout">
+      <div>
+        <h3 class="sec">Acontecimientos, en orden</h3>
+        <ol class="timeline">${evs.map((ev) => `<li><time>${esc(fmtAbs(ev.first_seen))}</time><div>${eventItem(ev, { items: 3 })}</div></li>`).join("")}</ol>
+      </div>
+      <aside class="rail">
+        <section>
+          <h3 class="sec" style="margin-top:0">Qué los une</h3>
+          <p class="small muted" style="margin-top:0">Términos distintivos que aparecen en dos o más de estos acontecimientos. Es la regla que formó el hilo; si no te convence, trata cada acontecimiento por separado.</p>
+          <div class="terms">${terms.map((t) => `<span class="term shared">${esc(showTerm(t))}</span>`).join("") || `<span class="muted small">Sin términos.</span>`}</div>
+          ${ctys.length ? `<p class="small">Países: ${esc(ctys.join(", "))}</p>` : ""}
+        </section>
+        <section>
+          <h3 class="sec">Cobertura por día</h3>
+          <p class="small muted" style="margin:0">Piezas del hilo por día.</p>
+          ${dayBars(days, { tip: (x) => (x.outlets || []).join(", ") })}
+          <details><summary>Medios por día</summary><div class="small">${days.map((x) => `<p style="margin:.4rem 0"><b>${esc(fmtWeekday(x.day))}:</b> ${esc((x.outlets || []).join(", "))}</p>`).join("")}</div></details>
+        </section>
+      </aside>
+    </div>`;
+};
+
+// ===== Expedientes: la cronología de un tema =====
+VIEWS.expedientes = async (_a, alive) => {
+  const d = await api("dossiers");
+  if (!alive()) return;
+  const ds = d.dossiers || [];
+  view.innerHTML = `
+    <div class="layout">
+      <div>
+        <h2 class="view">Expedientes</h2>
+        <p class="lede">Un expediente sigue un tema a lo largo del tiempo: el anuncio, el texto original, los debates, las modificaciones, las votaciones, las decisiones judiciales y sus efectos documentados. Combina las piezas que Mirador encuentra con tu búsqueda guardada y los hitos que tú documentas con su fuente.</p>
+        ${ds.length ? `<ul class="evlist">${ds.map((x) => `<li>
+            <h4 class="ev-title"><a href="#expediente-${x.id}">${esc(x.title)}</a></h4>
+            ${x.description ? `<p class="a-ex" style="margin:0 0 .3rem">${esc(x.description)}</p>` : ""}
+            <div class="ev-meta" style="margin:0"><span>${esc(plural(x.items, "hito", "hitos"))}</span>${x.last_item ? `<span>último hito ${esc(fmtDate(x.last_item))}</span>` : ""}${x.query ? `<span>${esc(plural(x.matches, "pieza coincide", "piezas coinciden"))} con «${esc(x.query)}»</span>` : `<span>sin búsqueda guardada</span>`}</div></li>`).join("")}</ul>`
+          : `<div class="empty"><b>Aún no tienes expedientes.</b> Crea uno para una reforma, un proceso judicial o una elección. También puedes empezar desde cualquier artículo con «A un expediente».</div>`}
+      </div>
+      <aside class="rail">
+        <section class="card">
+          <h3 class="sec" style="margin-top:0">Nuevo expediente</h3>
+          <form id="nd" class="stack">
+            <div class="field"><label for="nd-t">Título</label><input type="text" id="nd-t" required placeholder="Reforma a la salud"></div>
+            <div class="field"><label for="nd-d">Qué sigues y por qué (opcional)</label><textarea id="nd-d" style="min-height:3.5rem"></textarea></div>
+            <div class="field"><label for="nd-q">Búsqueda guardada</label><input type="text" id="nd-q" placeholder="&quot;reforma a la salud&quot; OR EPS"><span class="small muted">Misma sintaxis que Buscar: comillas para frases, OR para alternativas, guion para excluir.</span></div>
+            <div class="row"><button class="btn" type="submit">Crear</button><span class="small" id="nd-st"></span></div>
+          </form>
+        </section>
+      </aside>
+    </div>`;
+  $("#nd").onsubmit = async (e) => {
+    e.preventDefault();
+    try { const r = await api("dossier_save", { title: $("#nd-t").value, description: $("#nd-d").value, query: $("#nd-q").value }); location.hash = "expediente-" + r.id; }
+    catch (er) { $("#nd-st").textContent = er.message; }
+  };
+};
+
+VIEWS.expediente = async (id, alive) => {
+  const d = await api("dossier", { id });
+  if (!alive()) return;
+  const x = d.dossier, items = d.items || [], arts = d.articles || [];
+  const mode = lsGet("dosMode", "todo");
+  const used = new Set(items.map((i) => i.article_id).filter(Boolean));
+  const rows = [
+    ...items.map((i) => ({ day: String(i.happened_on).slice(0, 10), t: 0, i })),
+    ...(mode === "todo" ? arts.filter((a) => !used.has(a.id)).map((a) => ({ day: bogotaDay(a.published_at), t: 1, a, ts: a.published_at })) : []),
+  ].sort((p, q) => p.day.localeCompare(q.day) || p.t - q.t || String(p.ts || "").localeCompare(String(q.ts || "")));
+  const byKind = {};
+  items.forEach((i) => { byKind[i.kind] = (byKind[i.kind] || 0) + 1; });
+  const i0 = uid();
+  view.innerHTML = `
+    <p class="small"><a href="#expedientes">← Expedientes</a></p>
+    <h2 class="view">${esc(x.title)}</h2>
+    ${x.description ? `<p class="lede" style="margin-bottom:var(--s-3)">${esc(x.description)}</p>` : ""}
+    <div class="ev-meta"><span>${esc(plural(items.length, "hito documentado", "hitos documentados"))}</span>${x.query ? `<span>${esc(plural(arts.length, "pieza", "piezas"))} con «${esc(x.query)}»${arts.length === 250 ? " (las 250 más recientes)" : ""}</span>` : ""}</div>
+    <div class="layout">
+      <div>
+        <div class="seg" role="group" aria-label="Qué mostrar">
+          <button data-mode="todo" aria-pressed="${mode === "todo"}">Hitos y piezas</button><button data-mode="hitos" aria-pressed="${mode === "hitos"}">Solo hitos</button>
+        </div>
+        ${rows.length ? `<ol class="timeline chron">${rows.map((r) => r.i ? `<li class="hito">
+            <time>${esc(fmtDate(r.day))}</time>
+            <div class="stack" style="--x:0">
+              <div class="a-head"><span class="kbadge">${esc(r.i.kind)}</span>${r.i.source_name ? `<span class="out">${esc(r.i.source_name)}</span>` : ""}</div>
+              <p class="a-title" style="margin-top:.2rem">${r.i.url ? `<a href="${esc(r.i.url)}" target="_blank" rel="noopener">${esc(r.i.title)}</a>` : esc(r.i.title)}</p>
+              ${r.i.note ? `<p class="a-ex"><span class="lbl">Tu nota</span>${esc(r.i.note)}</p>` : ""}
+              ${!r.i.url ? `<p class="small" style="color:var(--warn);margin:0">Sin enlace a la fuente.</p>` : ""}
+              <div class="a-actions"><button class="linkbtn" data-delitem="${r.i.id}">Quitar hito</button></div>
+            </div></li>`
+          : `<li>
+            <time datetime="${esc(r.a.published_at)}">${esc(fmtAbs(r.a.published_at))}</time>
+            <div class="stack" style="--x:0">
+              <div class="a-head"><span class="kbadge art">pieza</span><span class="out">${esc(r.a.outlet_name)}</span>${tyChip(r.a.type)}${accChip(r.a.access)}</div>
+              <p class="a-title" style="margin-top:.2rem"><a href="${esc(outLink(r.a))}" target="_blank" rel="noopener">${esc(r.a.title)}</a></p>
+              <div class="a-actions"><button class="linkbtn" data-mkhito="${r.a.id}">Marcar como hito</button>${r.a.event_id ? `<a href="#evento-${r.a.event_id}">Comparar coberturas</a>` : ""}</div>
+            </div></li>`).join("")}</ol>`
+          : `<div class="empty"><b>La cronología está vacía.</b> ${x.query ? "Ninguna pieza coincide con la búsqueda guardada; prueba con otras palabras." : "Agrega una búsqueda guardada o documenta el primer hito."}</div>`}
+        <p class="small muted">Las piezas que encuentra la búsqueda son candidatas: solo se vuelven parte de la historia documentada cuando las marcas como hito. Mirador guarda 90 días de noticias${d.oldest_article ? ` (lo más antiguo es del ${esc(fmtDate(d.oldest_article))})` : ""}; para antecedentes anteriores, agrega el hito a mano con su enlace.</p>
+      </div>
+      <aside class="rail">
+        <section class="card">
+          <h3 class="sec" style="margin-top:0">Documentar un hito</h3>
+          <form id="hf" class="stack">
+            <div class="formgrid" style="margin:0">
+              <div class="field"><label for="${i0}f">Fecha</label><input type="date" id="${i0}f" required></div>
+              <div class="field"><label for="${i0}k">Tipo</label><select id="${i0}k">${DKINDS.map((k) => `<option>${k}</option>`).join("")}</select></div>
+            </div>
+            <div class="field"><label for="${i0}t">Qué pasó</label><input type="text" id="${i0}t" required placeholder="Radicación del proyecto en la Cámara"></div>
+            <div class="field"><label for="${i0}u">Enlace a la fuente</label><input type="url" id="${i0}u" placeholder="https://"></div>
+            <div class="field"><label for="${i0}s">Fuente</label><input type="text" id="${i0}s" placeholder="Gaceta del Congreso 1234 de 2026"></div>
+            <div class="field"><label for="${i0}n">Nota</label><input type="text" id="${i0}n"></div>
+            <div class="row"><button class="btn" type="submit">Agregar hito</button><span class="small" id="${i0}st"></span></div>
+          </form>
+        </section>
+        ${items.length ? `<section><h3 class="sec">Hitos por tipo</h3><table class="dist" style="width:100%">${Object.entries(byKind).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<tr><td>${esc(k)}</td><td>${n}</td></tr>`).join("")}</table>
+          <p class="small muted">Si falta un tipo (por ejemplo, la decisión judicial o los efectos documentados), es una pregunta abierta del expediente.</p></section>` : ""}
+        <section>
+          <details><summary>Editar el expediente</summary>
+            <form id="ef" class="stack" style="margin-top:var(--s-3)">
+              <div class="field"><label for="ef-t">Título</label><input type="text" id="ef-t" value="${esc(x.title)}" required></div>
+              <div class="field"><label for="ef-d">Descripción</label><textarea id="ef-d" style="min-height:3.5rem">${esc(x.description || "")}</textarea></div>
+              <div class="field"><label for="ef-q">Búsqueda guardada</label><input type="text" id="ef-q" value="${esc(x.query || "")}"></div>
+              <div class="row"><button class="btn" type="submit">Guardar</button><button class="btn quiet" type="button" id="ef-del">Borrar expediente</button><span class="small" id="ef-st"></span></div>
+            </form>
+          </details>
+        </section>
+      </aside>
+    </div>`;
+  view.querySelectorAll("[data-mode]").forEach((b) => b.onclick = () => { lsSet("dosMode", b.dataset.mode); route(); });
+  $("#hf").onsubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await api("dossier_item_save", { dossier_id: id, happened_on: $(`#${i0}f`).value, kind: $(`#${i0}k`).value, title: $(`#${i0}t`).value, url: $(`#${i0}u`).value, source_name: $(`#${i0}s`).value, note: $(`#${i0}n`).value });
+      route();
+    } catch (er) { $(`#${i0}st`).textContent = er.message; }
+  };
+  $("#ef").onsubmit = async (e) => { e.preventDefault(); try { await api("dossier_save", { id, title: $("#ef-t").value, description: $("#ef-d").value, query: $("#ef-q").value }); route(); } catch (er) { $("#ef-st").textContent = er.message; } };
+  const del = $("#ef-del");
+  del.onclick = async () => {
+    if (!del.dataset.armed) { del.dataset.armed = "1"; del.textContent = "Confirmar: borrar con sus hitos"; return; }
+    try { await api("dossier_delete", { id }); location.hash = "expedientes"; } catch (er) { $("#ef-st").textContent = er.message; }
+  };
+  view.querySelectorAll("[data-delitem]").forEach((b) => b.onclick = async () => { try { await api("dossier_item_delete", { id: Number(b.dataset.delitem) }); route(); } catch (er) { toast(er.message); } });
+  view.querySelectorAll("[data-mkhito]").forEach((b) => b.onclick = () => {
+    const host = b.closest(".stack"); const open = host.querySelector(".inline-form"); if (open) { open.remove(); return; }
+    const j = uid();
+    host.insertAdjacentHTML("beforeend", `<form class="inline-form"><div class="formgrid"><div class="field"><label for="${j}k">Tipo de hito</label><select id="${j}k">${DKINDS.map((k) => `<option>${k}</option>`).join("")}</select></div><div class="field"><label for="${j}n">Nota</label><input type="text" id="${j}n"></div></div><div class="row"><button class="btn" type="submit">Guardar hito</button><span class="small" id="${j}st"></span></div></form>`);
+    host.querySelector(".inline-form").onsubmit = async (e) => {
+      e.preventDefault();
+      try { await api("dossier_item_save", { dossier_id: id, article_id: Number(b.dataset.mkhito), kind: $(`#${j}k`).value, note: $(`#${j}n`).value }); route(); }
+      catch (er) { $(`#${j}st`).textContent = er.message; }
+    };
+  });
+};
+
+// ===== Contexto: biblioteca para entender antes de opinar =====
+const LKINDS = ["norma", "jurisprudencia", "datos", "institución", "organismo", "investigación", "guía", "verificación", "otra"];
+VIEWS.contexto = async (_a, alive) => {
+  const d = await api("library");
+  if (!alive()) return;
+  const topics = d.topics || [];
+  const openIds = new Set(lsGet("ctxOpen", []));
+  view.innerHTML = `
+    <div class="layout">
+      <div>
+        <h2 class="view">Contexto</h2>
+        <p class="lede">Antecedentes para entender antes de opinar. Cada tema trae preguntas guía en tres niveles y fuentes primarias para responderlas. La explicación la escribes tú, en tus notas, a partir de esas fuentes.</p>
+        ${topics.map((t) => {
+          const i = uid();
+          const links = t.links || [];
+          return `<details class="topic" data-topic="${esc(t.id)}" ${openIds.has(t.id) ? "open" : ""}>
+            <summary>${esc(t.title)}</summary>
+            <p class="q">${esc(t.question || "")}</p>
+            <div class="lvl">${(t.guide || []).map((g) => `<section><h5>${esc(g.level)}</h5><ol>${(g.items || []).map((q) => `<li>${esc(q)}</li>`).join("")}</ol></section>`).join("")}</div>
+            <h3 class="sec">Fuentes primarias · ${links.length}</h3>
+            <ul class="srclist">${links.map((l) => `<li>
+              <a href="${esc(l.url)}" target="_blank" rel="noopener" style="font:500 1rem/1.35 var(--f-display)">${esc(l.title)}</a>
+              <span class="small muted">${esc(l.publisher || "")}${l.publisher ? " · " : ""}${esc(l.kind || "")}${l.what ? " · " + esc(l.what) : ""}</span>
+              <span>${l.added_by === "usuario" ? `<span class="small muted">Agregada por ti ${esc(fmtAbs(l.added_at))}</span> · <button class="linkbtn" data-rmlink="${esc(l.url)}" data-t="${esc(t.id)}">Quitar</button>`
+                : l.check === "ok" ? `<span class="chk-ok">● Abrió en la comprobación del ${esc(fmtDate(l.checked_at))}</span>`
+                : `<span class="chk-no">● No respondió al lector automático el ${esc(fmtDate(l.checked_at))} (bloqueo o certificado); ábrela en tu navegador</span>`}</span></li>`).join("")}</ul>
+            <details style="margin-top:var(--s-3)"><summary>Agregar una fuente</summary>
+              <form class="stack" data-addlink="${esc(t.id)}" style="margin-top:var(--s-3);max-width:640px">
+                <div class="formgrid" style="margin:0">
+                  <div class="field"><label for="${i}t">Título</label><input type="text" id="${i}t" data-f="title" required></div>
+                  <div class="field"><label for="${i}u">Enlace</label><input type="url" id="${i}u" data-f="url" required placeholder="https://"></div>
+                  <div class="field"><label for="${i}p">Quién la publica</label><input type="text" id="${i}p" data-f="publisher"></div>
+                  <div class="field"><label for="${i}k">Tipo</label><select id="${i}k" data-f="kind">${LKINDS.map((k) => `<option>${k}</option>`).join("")}</select></div>
+                </div>
+                <div class="field"><label for="${i}w">Para qué sirve</label><input type="text" id="${i}w" data-f="what"></div>
+                <div class="row"><button class="btn" type="submit">Agregar</button><span class="small" data-st></span></div>
+              </form></details>
+            <h3 class="sec">Mi explicación</h3>
+            <div class="field"><label for="${i}n" class="small muted" style="font-weight:400">Responde las preguntas con tus palabras y cita la fuente de cada dato. Se guarda al salir del campo.</label>
+              <textarea id="${i}n" data-note="${esc(t.id)}" style="min-height:8rem">${esc(t.notes || "")}</textarea></div>
+            <div class="savestate" data-notest="${esc(t.id)}">${t.notes ? "Última edición " + esc(fmtAbs(t.updated_at)) : ""}</div>
+          </details>`;
+        }).join("")}
+      </div>
+      <aside class="rail">
+        <section class="note" style="margin:0">
+          <b>Por qué no hay textos explicativos.</b> Mirador no usa IA, y un resumen escrito sin fuentes verificables sería pedirte que confíes en él. En su lugar, cada tema enlaza las normas, datos e instituciones originales, y las preguntas te llevan de lo básico a lo avanzado. Las direcciones se comprobaron automáticamente; algunas instituciones bloquean lectores automáticos pero abren en el navegador.
+        </section>
+        <section>
+          <h3 class="sec">Para seguir un tema en el tiempo</h3>
+          <p class="small" style="margin-top:0">Si una pregunta depende de lo que está pasando (una reforma, un fallo), ábrele un <a href="#expedientes">expediente</a> y documenta sus hitos.</p>
+        </section>
+      </aside>
+    </div>`;
+  view.querySelectorAll("details.topic").forEach((el) => el.addEventListener("toggle", () => {
+    const ids = [...view.querySelectorAll("details.topic[open]")].map((x) => x.dataset.topic); lsSet("ctxOpen", ids);
+  }));
+  view.querySelectorAll("textarea[data-note]").forEach((t) => t.onchange = async () => {
+    const st = view.querySelector(`[data-notest="${t.dataset.note}"]`);
+    st.textContent = "Guardando…";
+    try { await api("library_note", { id: t.dataset.note, notes: t.value }); st.textContent = "Guardado " + fmtTime(new Date()); } catch (e) { st.textContent = e.message; }
+  });
+  view.querySelectorAll("form[data-addlink]").forEach((f) => f.onsubmit = async (e) => {
+    e.preventDefault();
+    const p = { id: f.dataset.addlink };
+    f.querySelectorAll("[data-f]").forEach((x) => { p[x.dataset.f] = x.value; });
+    try { await api("library_link_add", p); route(); } catch (er) { f.querySelector("[data-st]").textContent = er.message; }
+  });
+  view.querySelectorAll("[data-rmlink]").forEach((b) => b.onclick = async () => { try { await api("library_link_remove", { id: b.dataset.t, url: b.dataset.rmlink }); route(); } catch (er) { toast(er.message); } });
+};
+
+// ===== Conocimiento: grafo de mociones, conceptos, casos, estudios y fuentes =====
+function layoutGraph(nodes, edges, W, H) {
+  const n = nodes.length, idx = new Map(nodes.map((x, i) => [x.id, i]));
+  const P = nodes.map((x, i) => ({ x: W / 2 + Math.cos((2 * Math.PI * i) / n) * W * 0.36, y: H / 2 + Math.sin((2 * Math.PI * i) / n) * H * 0.36 }));
+  const E = edges.map((e) => [idx.get(e.a), idx.get(e.b), e.type === "enlace" ? 1.4 : 0.25 * ((e.shared || []).length || 1)]).filter((e) => e[0] != null && e[1] != null);
+  const k = Math.sqrt((W * H) / Math.max(n, 1)) * 0.62;
+  const iters = 320;
+  for (let it = 0; it < iters; it++) {
+    const temp = (W / 9) * (1 - it / iters) + 0.5;
+    const F = P.map(() => ({ x: 0, y: 0 }));
+    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+      const dx = P[i].x - P[j].x, dy = P[i].y - P[j].y, d2 = dx * dx + dy * dy + 0.01, f = (k * k) / d2;
+      F[i].x += dx * f; F[i].y += dy * f; F[j].x -= dx * f; F[j].y -= dy * f;
+    }
+    for (const [a, b, w] of E) {
+      const dx = P[a].x - P[b].x, dy = P[a].y - P[b].y, d = Math.sqrt(dx * dx + dy * dy) + 0.01, f = (d / k) * w;
+      F[a].x -= dx * f; F[a].y -= dy * f; F[b].x += dx * f; F[b].y += dy * f;
+    }
+    for (let i = 0; i < n; i++) {
+      F[i].x += (W / 2 - P[i].x) * 0.6; F[i].y += (H / 2 - P[i].y) * 0.6;
+      const m = Math.sqrt(F[i].x ** 2 + F[i].y ** 2) + 0.01, s = Math.min(m, temp) / m;
+      P[i].x = Math.max(24, Math.min(W - 150, P[i].x + F[i].x * s));
+      P[i].y = Math.max(20, Math.min(H - 20, P[i].y + F[i].y * s));
+    }
+  }
+  return P;
+}
+const shortT = (t) => String(t || "").split(/\s+/)[0];
+VIEWS.conocimiento = async (_a, alive) => {
+  const [g, c] = await Promise.all([api("graph"), api("concepts")]);
+  if (!alive()) return;
+  const showCat = lsGet("gCat", true), minShared = lsGet("gMin", 2);
+  const kindF = lsGet("cKind", "");
+  const nodes = g.nodes || [];
+  const edges = (g.edges || []).filter((e) => e.type === "enlace" || (showCat && (e.shared || []).length >= minShared));
+  // los nodos conectados se acomodan por fuerzas; los aislados van en una franja aparte, abajo
+  const deg = new Map();
+  edges.forEach((e) => { deg.set(e.a, (deg.get(e.a) || 0) + 1); deg.set(e.b, (deg.get(e.b) || 0) + 1); });
+  const linked = nodes.filter((x) => deg.get(x.id)), lone = nodes.filter((x) => !deg.get(x.id));
+  const W = 960, GH = linked.length ? Math.max(280, Math.min(560, linked.length * 26)) : 0, perRow = 6, rowH = 30;
+  const loneTop = GH + (lone.length ? 36 : 0);
+  const H = loneTop + Math.ceil(lone.length / perRow) * rowH + (lone.length ? 10 : 0) || 120;
+  const P = linked.length ? layoutGraph(linked, edges, W, GH) : [];
+  const pos = new Map(linked.map((x, i) => [x.id, P[i]]));
+  lone.forEach((x, i) => pos.set(x.id, { x: 24 + (i % perRow) * (W / perRow), y: loneTop + Math.floor(i / perRow) * rowH + 12 }));
+  const cs = (c.concepts || []).filter((x) => !kindF || x.kind === kindF);
+  const nC = nodes.filter((x) => x.type === "concept").length;
+  const i0 = uid();
+  view.innerHTML = `
+    <div class="layout">
+      <div>
+        <h2 class="view">Conocimiento</h2>
+        <p class="lede">El mapa de lo que has estudiado: mociones, conceptos, teorías, casos, estudios, actores y fuentes, y cómo se conectan. Las conexiones las haces tú; las líneas punteadas son la única sugerencia automática: mociones que comparten categorías temáticas.</p>
+        <div class="row" style="margin-bottom:var(--s-2)">
+          <label class="toggle"><input type="checkbox" id="g-cat" ${showCat ? "checked" : ""}> Mostrar categorías compartidas</label>
+          <div class="seg" role="group" aria-label="Mínimo de categorías compartidas" style="margin:0">${[1, 2].map((v) => `<button data-gmin="${v}" aria-pressed="${minShared === v}" ${showCat ? "" : "disabled"}>${v === 1 ? "1 o más" : "2 o más"}</button>`).join("")}</div>
+        </div>
+        <div class="graphbox"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Grafo de ${nodes.length} nodos y ${edges.length} conexiones">
+          ${lone.length ? `<line x1="16" x2="${W - 16}" y1="${GH + 8}" y2="${GH + 8}" style="stroke:var(--rule)"></line><text x="16" y="${GH + 26}" style="font-weight:600;fill:var(--ink-3)">SIN CONEXIONES TODAVÍA (${lone.length})</text>` : ""}
+          ${edges.map((e) => { const a = pos.get(e.a), b = pos.get(e.b); if (!a || !b) return ""; return `<line class="${e.type === "enlace" ? "e-link" : "e-cat"}" x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}"><title>${esc(e.type === "enlace" ? (e.note || "Enlace tuyo") : "Comparten: " + (e.shared || []).map((x) => MCATS[x] || x).join(", "))}</title></line>`; }).join("")}
+          ${nodes.map((x) => { const p = pos.get(x.id); const isM = x.type === "motion";
+            const label = isM ? `${shortT(x.tournament)} ${x.round || "s/r"}` : x.label;
+            return `<a href="#${isM ? "mocion" : "concepto"}-${x.ref}" aria-label="${esc((isM ? "Moción: " : x.kind + ": ") + x.label)}">
+              ${isM ? `<circle class="n-m${x.prepared ? " prep" : ""}" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8"></circle>` : `<rect class="n-c" x="${(p.x - 7).toFixed(1)}" y="${(p.y - 7).toFixed(1)}" width="14" height="14" rx="3"></rect>`}
+              <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="16" fill="transparent"><title>${esc(isM ? `${x.label} (${x.tournament}, ${x.round || "sin ronda"})` : `${x.label} · ${x.kind}`)}</title></circle>
+              <text x="${(p.x + 12).toFixed(1)}" y="${(p.y + 4).toFixed(1)}" ${isM ? "" : 'style="font-weight:700;fill:var(--ink)"'}>${esc(label.length > 28 ? label.slice(0, 27) + "…" : label)}</text></a>`; }).join("")}
+        </svg></div>
+        <div class="legend"><span><i style="border:1.5px solid var(--ink-2);border-radius:50%;background:var(--surface)"></i>moción</span><span><i style="border:1.5px solid var(--accent);border-radius:50%;background:var(--accent-soft)"></i>moción con preparación</span><span><i style="background:var(--ink);border-radius:3px"></i>concepto, caso, estudio…</span><span><i style="border-top:1.5px solid var(--ink-3);height:0;width:18px;vertical-align:3px"></i>enlace tuyo</span><span><i style="border-top:1px dashed var(--ink-3);height:0;width:18px;vertical-align:3px"></i>categoría compartida</span></div>
+        <p class="small muted">Toca un nodo para abrirlo. ${g.article_links ? esc(plural(g.article_links, "artículo enlazado", "artículos enlazados")) + " a conceptos (no se dibujan; están en cada concepto)." : ""}</p>
+
+        <h3 class="sec">Conceptos · ${(c.concepts || []).length}</h3>
+        <div class="chips">${["", ...CKINDS].map((k) => `<button class="chip" data-ck="${k}" aria-pressed="${kindF === k}">${k || "Todos"}</button>`).join("")}</div>
+        ${cs.length ? `<ul class="alist">${cs.map((x) => `<li><p class="a-title"><a href="#concepto-${x.id}" style="color:var(--ink)">${esc(x.name)}</a> <span class="ty ty-noticia">${esc(x.kind)}</span></p>
+            ${x.description ? `<p class="a-ex small">${esc(x.description)}</p>` : ""}
+            <div class="ev-meta" style="margin:0"><span>${esc(plural(x.motions, "moción", "mociones"))}</span><span>${esc(plural(x.articles, "artículo", "artículos"))}</span><span>${esc(plural(x.concepts, "concepto relacionado", "conceptos relacionados"))}</span></div></li>`).join("")}</ul>`
+          : `<div class="empty"><b>${nC ? "Ninguno de este tipo." : "Aún no hay conceptos."}</b> Créalos aquí, desde el espacio de preparación de una moción o con «Enlazar concepto» en cualquier artículo.</div>`}
+      </div>
+      <aside class="rail">
+        <section class="card">
+          <h3 class="sec" style="margin-top:0">Nuevo concepto</h3>
+          <form id="ncf" class="stack">
+            <div class="field"><label for="${i0}n">Nombre</label><input type="text" id="${i0}n" required placeholder="Paz democrática"></div>
+            <div class="field"><label for="${i0}k">Tipo</label><select id="${i0}k">${CKINDS.map((k) => `<option>${k}</option>`).join("")}</select></div>
+            <div class="field"><label for="${i0}d">Qué es, en tus palabras</label><textarea id="${i0}d" style="min-height:3.5rem"></textarea></div>
+            <div class="field"><label for="${i0}u">Fuente (enlace)</label><input type="url" id="${i0}u" placeholder="https://"></div>
+            <div class="field"><label for="${i0}f">Fecha de la fuente</label><input type="date" id="${i0}f"></div>
+            <div class="row"><button class="btn" type="submit">Crear</button><span class="small" id="${i0}st"></span></div>
+          </form>
+        </section>
+        <section class="note" style="margin:0"><b>Reutilizar con cuidado.</b> Un estudio o un caso que sirvió para una moción puede no servir para otra: revisa la fecha de la fuente y su contexto original antes de usarlo de nuevo.</section>
+      </aside>
+    </div>`;
+  $("#g-cat").onchange = (e) => { lsSet("gCat", e.target.checked); route(); };
+  view.querySelectorAll("[data-gmin]").forEach((b) => b.onclick = () => { lsSet("gMin", Number(b.dataset.gmin)); route(); });
+  view.querySelectorAll("[data-ck]").forEach((b) => b.onclick = () => { lsSet("cKind", b.dataset.ck); route(); });
+  $("#ncf").onsubmit = async (e) => {
+    e.preventDefault();
+    try { const r = await api("concept_save", { name: $(`#${i0}n`).value, kind: $(`#${i0}k`).value, description: $(`#${i0}d`).value, url: $(`#${i0}u`).value, source_date: $(`#${i0}f`).value }); location.hash = "concepto-" + r.id; }
+    catch (er) { $(`#${i0}st`).textContent = er.message; }
+  };
+};
+
+VIEWS.concepto = async (id, alive) => {
+  const [d, m, c] = await Promise.all([api("concept", { id }), api("motions", {}), api("concepts")]);
+  if (!alive()) return;
+  const x = d.concept;
+  const motions = m.motions || [];
+  const others = (c.concepts || []).filter((o) => o.id !== id);
+  const i0 = uid();
+  view.innerHTML = `
+    <p class="small"><a href="#conocimiento">← Conocimiento</a></p>
+    <div class="a-head"><span class="kbadge">${esc(x.kind)}</span></div>
+    <h2 class="view" style="margin-top:var(--s-2)">${esc(x.name)}</h2>
+    ${x.description ? `<p class="lede" style="margin-bottom:var(--s-3)">${esc(x.description)}</p>` : `<p class="small muted">Sin descripción todavía.</p>`}
+    ${x.url ? `<p class="small"><a href="${esc(x.url)}" target="_blank" rel="noopener">Fuente</a>${x.source_date ? ` · ${esc(fmtDate(x.source_date))}` : " · sin fecha"}</p>` : `<p class="small" style="color:var(--warn)">Sin fuente enlazada.</p>`}
+    <div class="layout">
+      <div>
+        <h3 class="sec">Mociones · ${d.motions.length}</h3>
+        ${d.motions.length ? `<ul class="mlist">${d.motions.map((r) => `<li><div class="rd">${esc(shortT(r.tournament))}<br>${esc(r.round || "")}</div><div><a class="mt" href="#mocion-${r.id}">${esc(r.text)}</a>${r.note ? `<p class="a-ex small" style="margin:.2rem 0 0">${esc(r.note)}</p>` : ""}<div class="a-actions"><button class="linkbtn" data-unlink="${r.link_id}">Quitar enlace</button></div></div></li>`).join("")}</ul>` : `<p class="small muted">Ninguna moción enlazada.</p>`}
+        <h3 class="sec">Artículos · ${d.articles.length}</h3>
+        ${d.articles.length ? `<ul class="alist">${d.articles.map((a) => articleRow(a, { showExcerpt: false, extra: `${a.link_note ? `<span class="muted">${esc(a.link_note)}</span>` : ""}<button class="linkbtn" data-unlink="${a.link_id}">Quitar enlace</button>` })).join("")}</ul>` : `<p class="small muted">Ningún artículo enlazado. Usa «Enlazar concepto» en cualquier artículo.</p>`}
+        <h3 class="sec">Conceptos relacionados · ${d.concepts.length}</h3>
+        ${d.concepts.length ? `<div class="stack">${d.concepts.map((r) => `<div><a href="#concepto-${r.id}" style="font:500 1rem/1.3 var(--f-display)">${esc(r.name)}</a> <span class="small muted">${esc(r.kind)}${r.note ? " · " + esc(r.note) : ""}</span> <button class="linkbtn" data-unlink="${r.link_id}">Quitar</button></div>`).join("")}</div>` : `<p class="small muted">Ninguno.</p>`}
+      </div>
+      <aside class="rail">
+        <section class="card">
+          <h3 class="sec" style="margin-top:0">Enlazar</h3>
+          <form id="lm" class="stack">
+            <div class="field"><label for="${i0}m">Con una moción</label><select id="${i0}m"><option value="">Elige…</option>${motions.map((r) => `<option value="${r.id}">${esc(shortT(r.tname))} ${esc(r.round_abbr || r.round_name || "")}: ${esc(r.text.slice(0, 70))}</option>`).join("")}</select></div>
+            <div class="field"><label for="${i0}c">Con otro concepto</label><select id="${i0}c"><option value="">Elige…</option>${others.map((o) => `<option value="${o.id}">${esc(o.name)} (${esc(o.kind)})</option>`).join("")}</select></div>
+            <div class="field"><label for="${i0}n">Por qué se relacionan</label><input type="text" id="${i0}n"></div>
+            <div class="row"><button class="btn" type="submit">Enlazar</button><span class="small" id="${i0}st"></span></div>
+          </form>
+        </section>
+        <section>
+          <details><summary>Editar o borrar</summary>
+            <form id="ec" class="stack" style="margin-top:var(--s-3)">
+              <div class="field"><label for="${i0}en">Nombre</label><input type="text" id="${i0}en" value="${esc(x.name)}" required></div>
+              <div class="field"><label for="${i0}ek">Tipo</label><select id="${i0}ek">${CKINDS.map((k) => `<option ${x.kind === k ? "selected" : ""}>${k}</option>`).join("")}</select></div>
+              <div class="field"><label for="${i0}ed">Descripción</label><textarea id="${i0}ed" style="min-height:3.5rem">${esc(x.description || "")}</textarea></div>
+              <div class="field"><label for="${i0}eu">Fuente</label><input type="url" id="${i0}eu" value="${esc(x.url || "")}"></div>
+              <div class="field"><label for="${i0}ef">Fecha de la fuente</label><input type="date" id="${i0}ef" value="${esc(x.source_date || "")}"></div>
+              <div class="row"><button class="btn" type="submit">Guardar</button><button class="btn quiet" type="button" id="ec-del">Borrar</button><span class="small" id="ec-st"></span></div>
+            </form>
+          </details>
+        </section>
+      </aside>
+    </div>`;
+  $("#lm").onsubmit = async (e) => {
+    e.preventDefault();
+    const mid = $(`#${i0}m`).value, cid = $(`#${i0}c`).value, note = $(`#${i0}n`).value;
+    if (!mid && !cid) { $(`#${i0}st`).textContent = "Elige una moción o un concepto."; return; }
+    try {
+      if (mid) await api("concept_link", { concept_id: id, motion_id: Number(mid), note });
+      if (cid) await api("concept_link", { concept_id: id, other_concept_id: Number(cid), note });
+      route();
+    } catch (er) { $(`#${i0}st`).textContent = er.message; }
+  };
+  view.querySelectorAll("[data-unlink]").forEach((b) => b.onclick = async () => { try { await api("concept_unlink", { id: Number(b.dataset.unlink) }); route(); } catch (er) { toast(er.message); } });
+  $("#ec").onsubmit = async (e) => {
+    e.preventDefault();
+    try { await api("concept_save", { id, name: $(`#${i0}en`).value, kind: $(`#${i0}ek`).value, description: $(`#${i0}ed`).value, url: $(`#${i0}eu`).value, source_date: $(`#${i0}ef`).value }); route(); }
+    catch (er) { $("#ec-st").textContent = er.message; }
+  };
+  const del = $("#ec-del");
+  del.onclick = async () => {
+    if (!del.dataset.armed) { del.dataset.armed = "1"; del.textContent = "Confirmar: borrar concepto y enlaces"; return; }
+    try { await api("concept_delete", { id }); location.hash = "conocimiento"; } catch (er) { $("#ec-st").textContent = er.message; }
+  };
+};
+
+// ===== Entrenar: simulaciones BP con tiempo =====
+const TRAIN = { timer: null, start: 0, acc: 0, running: false, marks: new Set(), audio: null };
+function stopTimers() { if (TRAIN.timer) { clearInterval(TRAIN.timer); TRAIN.timer = null; } TRAIN.running = false; }
+const mmss = (s) => `${s < 0 ? "−" : ""}${Math.floor(Math.abs(s) / 60)}:${String(Math.floor(Math.abs(s) % 60)).padStart(2, "0")}`;
+function beep(n = 1) {
+  if (!lsGet("tSound", true)) return;
+  try {
+    TRAIN.audio ||= new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = TRAIN.audio;
+    for (let i = 0; i < n; i++) {
+      const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = 880; o.connect(g); g.connect(ctx.destination);
+      const t0 = ctx.currentTime + i * 0.25; g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.25, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.18);
+      o.start(t0); o.stop(t0 + 0.2);
+    }
+  } catch { /* sin audio */ }
+}
+const EXERCISES = {
+  "preparación": { label: "Preparación", total: 900, down: true, desc: "15 minutos, como en el torneo. Sin internet; solo lo que ya sabes y tus notas." },
+  "discurso": { label: "Discurso", total: 420, poi: true, desc: "7 minutos. El primer y el último minuto son protegidos: no se aceptan puntos de información." },
+  "refutación": { label: "Refutación", total: 180, desc: "3 minutos para desmontar un argumento concreto: niega, mitiga o voltea, y explica por qué importa." },
+  "extensión": { label: "Extensión de cierre", total: 420, poi: true, desc: "Para CG o CO: aporta algo que la apertura de tu banca no dijo y que gane el debate." },
+};
+function timerPhase(ex, t) {
+  if (ex.down) { const left = ex.total - t; return left <= 0 ? ["end", "Tiempo de preparación cumplido"] : left <= 60 ? ["prot", "Último minuto: ordena tu estructura"] : ["", ""]; }
+  if (t >= ex.total + 15) return ["end", "Fuera de tiempo: el juez deja de escuchar"];
+  if (t >= ex.total) return ["end", "Tiempo cumplido: 15 segundos de gracia para cerrar"];
+  if (ex.poi) { if (t < 60) return ["prot", "Minuto protegido: no se aceptan puntos de información"]; if (t >= ex.total - 60) return ["prot", "Minuto protegido: cierra y resume"]; return ["poi", "Se pueden ofrecer puntos de información"]; }
+  return ["", ""];
+}
+function sparkSvg(pts) {
+  const W = 240, H = 56, pad = 8;
+  if (!pts.length) return `<p class="small muted" style="margin:.4rem 0 0">Sin datos.</p>`;
+  const x = (i) => pts.length === 1 ? W / 2 : pad + (i * (W - 2 * pad)) / (pts.length - 1);
+  const y = (v) => H - pad - ((v - 1) / 4) * (H - 2 * pad);
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución de 1 a 5">
+    ${[1, 3, 5].map((v) => `<line class="gr" x1="0" x2="${W}" y1="${y(v)}" y2="${y(v)}" vector-effect="non-scaling-stroke"></line>`).join("")}
+    ${pts.length > 1 ? `<polyline class="ln" vector-effect="non-scaling-stroke" points="${pts.map((p, i) => `${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ")}"></polyline>` : ""}
+    ${pts.map((p, i) => `<g tabindex="0" data-tipv="${p.v} de 5" data-tip="${esc(p.tip)}"><circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="12" fill="transparent"></circle><circle class="pt" cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="4" vector-effect="non-scaling-stroke"></circle></g>`).join("")}
+  </svg>`;
+}
+VIEWS.entrenar = async (mid, alive) => {
+  const reqs = [api("training_list"), api("tournaments")];
+  if (mid) reqs.push(api("motion", { id: mid }));
+  const [hist, tours, md] = await Promise.all(reqs);
+  if (!alive()) return;
+  const sessions = hist.sessions || [];
+  const mo = md ? md.motion : null;
+  const prep = (md && md.prep && md.prep.sections) || {};
+  const exKey = lsGet("tEx", "discurso");
+  const ex = EXERCISES[exKey] || EXERCISES.discurso;
+  const pos = lsGet("tPos", "OG");
+  const pf = lsGet("tPick", { category: "", tournament_id: "", unpracticed: false });
+  const isGov = pos === "OG" || pos === "CG";
+  const splitArgs = (t) => String(t || "").split(/\n\s*\n|\n(?=\s*[-•*\d]+[.)]?\s)/).map((s) => s.trim()).filter((s) => s.length > 8);
+  const toRefute = splitArgs(isGov ? prep.oposicion : prep.gobierno);
+  const opening = [prep[isGov ? "estrategia_og" : "estrategia_oo"], prep[isGov ? "gobierno" : "oposicion"]].filter(Boolean).join("\n\n");
+  // progreso por dimensión: sesiones en orden cronológico
+  const chron = [...sessions].reverse();
+  const series = DIMS.map(([k, label]) => {
+    const pts = chron.filter((s) => s.scores && s.scores[k]).map((s) => ({ v: Number(s.scores[k]), tip: `${fmtDate(s.created_at)} · ${s.kind}${s.position ? " " + s.position : ""}` }));
+    const avg = pts.length ? pts.reduce((a, p) => a + p.v, 0) / pts.length : null;
+    return { k, label, pts, avg, last: pts.length ? pts[pts.length - 1].v : null };
+  });
+  view.innerHTML = `
+    <div class="layout">
+      <div>
+        <h2 class="view">Entrenamiento BP</h2>
+        <p class="lede">Simula una ronda por partes: preparación con tiempo, discurso de tu posición, refutación y extensión de cierre. Al final, evalúa por separado la calidad argumentativa, el conocimiento factual, la estrategia de equipo y el desempeño oral.</p>
+
+        <h3 class="sec">1 · Moción</h3>
+        ${mo ? `<div class="card"><div class="prov">${esc(md.tournament?.name || "")} · ${esc(mo.round_name || "Sin ronda")}</div>
+            <p class="motion-text" style="font-size:1.25rem">${esc(mo.text_original)}</p>
+            ${mo.info_slide_text ? `<details><summary>Info slide</summary><div class="slide small" style="margin-top:.5rem">${esc(mo.info_slide_text).replace(/\n\s*\n/g, "<br><br>")}</div></details>` : ""}
+            <div class="a-actions" style="margin-top:var(--s-2)"><a href="#mocion-${mo.id}">Abrir preparación</a><a href="#entrenar">Cambiar de moción</a></div></div>`
+          : `<form id="pick" class="formgrid">
+              <div class="field"><label for="pk-c">Categoría</label><select id="pk-c"><option value="">Cualquiera</option>${Object.entries(MCATS).map(([k, l]) => `<option value="${k}" ${pf.category === k ? "selected" : ""}>${esc(l)}</option>`).join("")}</select></div>
+              <div class="field"><label for="pk-t">Torneo</label><select id="pk-t"><option value="">Cualquiera</option>${(tours.tournaments || []).map((t) => `<option value="${t.id}" ${String(pf.tournament_id) === String(t.id) ? "selected" : ""}>${esc(t.short_name || t.name)}</option>`).join("")}</select></div>
+              <label class="toggle" style="align-self:end"><input type="checkbox" id="pk-u" ${pf.unpracticed ? "checked" : ""}> Solo las que no he practicado</label>
+              <div style="align-self:end"><button class="btn" type="submit">Sortear moción</button></div>
+            </form><p class="small muted" id="pk-st">O elige una en la <a href="#mociones">biblioteca de mociones</a> y pulsa «Entrenar con esta moción».</p>`}
+
+        <h3 class="sec">2 · Ejercicio</h3>
+        <div class="seg" role="group" aria-label="Ejercicio">${Object.entries(EXERCISES).map(([k, e]) => `<button data-ex="${k}" aria-pressed="${k === exKey}">${e.label}</button>`).join("")}</div>
+        <div class="formgrid" style="max-width:520px">
+          <div class="field"><label for="t-pos">Posición</label><select id="t-pos">${POS.map((p) => `<option ${p === pos ? "selected" : ""}>${p}</option>`).join("")}</select></div>
+          <div class="field"><label for="t-spk">Rol</label><select id="t-spk">${SPEAKERS[pos].map((s) => `<option>${s}</option>`).join("")}</select></div>
+        </div>
+        <p class="small" style="margin-top:0">${esc(ex.desc)}</p>
+        ${exKey === "extensión" && !(pos === "CG" || pos === "CO") ? `<div class="note">La extensión es el trabajo de los cierres. Cambia la posición a CG o CO.</div>` : ""}
+
+        <div class="card">
+          <div class="tphase" id="t-phase"></div>
+          <div class="timer" id="t-clock" aria-live="off">${mmss(ex.down ? ex.total : 0)}</div>
+          <div class="ttrack" aria-hidden="true">${ex.poi ? `<div class="zone" style="left:0;width:${(60 / (ex.total + 15)) * 100}%"></div><div class="zone" style="left:${((ex.total - 60) / (ex.total + 15)) * 100}%;width:${(60 / (ex.total + 15)) * 100}%"></div>` : ""}<div class="pos" id="t-pos-bar" style="width:0"></div></div>
+          ${ex.poi ? `<div class="tticks" aria-hidden="true">${[0, 60, ex.total - 60, ex.total].map((s) => `<span style="left:${(s / (ex.total + 15)) * 100}%">${mmss(s)}</span>`).join("")}</div>` : ""}
+          <div class="row" style="margin-top:var(--s-3)"><button class="btn" id="t-go">Iniciar</button><button class="btn quiet" id="t-reset">Reiniciar</button><label class="toggle"><input type="checkbox" id="t-snd" ${lsGet("tSound", true) ? "checked" : ""}> Avisos sonoros</label></div>
+        </div>
+
+        ${exKey === "refutación" ? `<div class="stack" style="margin-top:var(--s-4)">
+            <div class="field"><label for="t-arg">Argumento a refutar</label>
+              ${toRefute.length ? `<select id="t-argsel"><option value="">Elige uno de tu preparación (${isGov ? "Oposición" : "Gobierno"})…</option>${toRefute.map((a, i) => `<option value="${i}">${esc(a.slice(0, 110))}</option>`).join("")}</select>` : ""}
+              <textarea id="t-arg" placeholder="${mo ? "Tu preparación no tiene argumentos del otro lado todavía. Escribe aquí el argumento que vas a refutar." : "Escribe el argumento que vas a refutar."}"></textarea></div>
+            <div class="field"><label for="t-reb">Mi refutación (esquema)</label><textarea id="t-reb" placeholder="Niega: … / Mitiga: … / Voltea: … / Por qué importa: …"></textarea></div></div>` : ""}
+        ${exKey === "extensión" ? `<div class="stack" style="margin-top:var(--s-4)">
+            ${opening ? `<div class="reuse"><span class="small muted">Lo que tu preparación anticipa de la apertura de tu banca:</span><pre>${esc(opening)}</pre></div>` : `<p class="small muted">Escribe primero en la preparación de la moción qué haría la apertura de tu banca, para extender sobre eso.</p>`}
+            <div class="field"><label for="t-ext">Mi extensión: qué agrego que la apertura no dijo</label><textarea id="t-ext"></textarea></div></div>` : ""}
+        ${exKey === "preparación" || exKey === "discurso" ? `<div class="field" style="margin-top:var(--s-4)"><label for="t-scr">Notas de esta práctica</label><textarea id="t-scr" placeholder="Esquema del discurso, ideas sueltas…"></textarea></div>` : ""}
+
+        <h3 class="sec">3 · Evaluación</h3>
+        <p class="small muted" style="margin-top:0">Puntúa cada dimensión por separado. Un discurso bien dicho con datos flojos debe tener buena nota oral y baja de conocimiento: mezclarlas esconde qué mejorar.</p>
+        <form id="t-eval" class="rubric">
+          ${DIMS.map(([k, label, q, anchors]) => `<fieldset><legend>${label}</legend>
+            <p class="small" style="margin:0">${esc(q)}</p>
+            <div class="scale">${[1, 2, 3, 4, 5].map((v) => `<label><input type="radio" name="${k}" value="${v}"><span>${v}</span></label>`).join("")}</div>
+            <p class="small muted" style="margin:0">1 = ${esc(anchors[0])} · 3 = ${esc(anchors[2])} · 5 = ${esc(anchors[4])}</p>
+            <div class="field" style="margin-top:var(--s-2)"><label for="tn-${k}">Qué funcionó y qué mejorar</label><input type="text" id="tn-${k}"></div>
+          </fieldset>`).join("")}
+          <div class="row"><div class="field" style="min-width:180px"><label for="t-who">Quién evalúa</label><select id="t-who"><option>Yo</option><option>Compañero o compañera</option><option>Juez o jueza</option></select></div>
+            <button class="btn" type="submit">Guardar sesión</button><span class="small" id="t-st"></span></div>
+        </form>
+      </div>
+      <aside class="rail">
+        <section>
+          <h3 class="sec" style="margin-top:0">Tu progreso · ${esc(plural(sessions.length, "sesión", "sesiones"))}</h3>
+          ${sessions.length ? `<div class="sparks" style="grid-template-columns:1fr">${series.map((s) => `<div class="spark"><h5>${esc(s.label)}</h5>
+              <div class="big mono">${s.last ?? "–"}<span class="small muted" style="font-family:var(--f-ui)"> última · promedio ${s.avg != null ? s.avg.toFixed(1) : "–"} en ${s.pts.length}</span></div>${sparkSvg(s.pts)}</div>`).join("")}</div>
+            <p class="small muted">Cada gráfico va de 1 a 5, en orden de práctica. Son autoevaluaciones: sirven para ver tendencias tuyas, no para compararte con nadie.</p>`
+            : `<p class="small muted" style="margin-top:0">Cuando guardes sesiones verás aquí cómo evoluciona cada dimensión por separado.</p>`}
+        </section>
+        ${sessions.length ? `<section><h3 class="sec">Historial</h3>
+          <div class="scroll"><table class="dist" style="width:100%"><tr><th>Fecha</th><th>Ejercicio</th><th title="Argumentación">A</th><th title="Conocimiento">C</th><th title="Estrategia">E</th><th title="Oral">O</th><th></th></tr>
+          ${sessions.slice(0, 30).map((s) => `<tr><td title="${esc(s.motion || "")}" style="white-space:nowrap">${esc(fmtDayShort(bogotaDay(s.created_at)))}</td><td style="text-align:left">${esc(s.kind)}${s.position ? " " + esc(s.position) : ""}${s.speech_seconds ? ` · ${mmss(s.speech_seconds)}` : ""}</td>${DIMS.map(([k]) => `<td>${esc(s.scores?.[k] ?? "–")}</td>`).join("")}<td><button class="linkbtn" data-tdel="${s.id}" aria-label="Borrar sesión" title="Borrar sesión">×</button></td></tr>`).join("")}</table></div>
+          <p class="small muted">A argumentación · C conocimiento · E estrategia · O oral.</p></section>` : ""}
+        <section class="note" style="margin:0"><b>Sobre las estadísticas de torneo.</b> Que una posición haya ganado más en un torneo no dice si tus argumentos son buenos. Evalúa el razonamiento y la evidencia por sí mismos.</section>
+      </aside>
+    </div>`;
+
+  // selección de moción
+  if (!mo) $("#pick").onsubmit = async (e) => {
+    e.preventDefault();
+    const p = { category: $("#pk-c").value || null, tournament_id: $("#pk-t").value || null, unpracticed: $("#pk-u").checked };
+    lsSet("tPick", { category: p.category || "", tournament_id: p.tournament_id || "", unpracticed: p.unpracticed });
+    try { const r = await api("training_pick", p); location.hash = "entrenar-" + r.id; } catch (er) { $("#pk-st").textContent = er.message; }
+  };
+  view.querySelectorAll("[data-ex]").forEach((b) => b.onclick = () => { lsSet("tEx", b.dataset.ex); route(); });
+  $("#t-pos").onchange = (e) => { lsSet("tPos", e.target.value); route(); };
+  $("#t-snd").onchange = (e) => lsSet("tSound", e.target.checked);
+  const sel = $("#t-argsel");
+  if (sel) sel.onchange = () => { if (sel.value !== "") $("#t-arg").value = toRefute[Number(sel.value)]; };
+
+  // cronómetro
+  TRAIN.acc = 0; TRAIN.running = false; TRAIN.marks = new Set();
+  const elapsed = () => TRAIN.acc + (TRAIN.running ? (performance.now() - TRAIN.start) / 1000 : 0);
+  const draw = () => {
+    const t = elapsed();
+    const shown = ex.down ? ex.total - t : t;
+    const clock = $("#t-clock"); if (!clock) return stopTimers();
+    clock.textContent = mmss(Math.round(shown) === 0 ? 0 : shown);
+    clock.classList.toggle("over", ex.down ? t >= ex.total : t >= ex.total);
+    const [cls, txt] = timerPhase(ex, t);
+    const ph = $("#t-phase"); ph.className = "tphase " + cls; ph.textContent = TRAIN.running || t > 0 ? txt : "";
+    $("#t-pos-bar").style.width = Math.min(100, (t / (ex.total + (ex.down ? 0 : 15))) * 100) + "%";
+    const marks = ex.down ? [[ex.total - 60, 1], [ex.total, 2]] : ex.poi ? [[60, 1], [ex.total - 60, 1], [ex.total, 2], [ex.total + 15, 3]] : [[ex.total, 2]];
+    for (const [s, n] of marks) if (t >= s && !TRAIN.marks.has(s)) { TRAIN.marks.add(s); if (TRAIN.running) beep(n); }
+  };
+  $("#t-go").onclick = () => {
+    const b = $("#t-go");
+    if (TRAIN.running) { TRAIN.acc = elapsed(); TRAIN.running = false; clearInterval(TRAIN.timer); TRAIN.timer = null; b.textContent = "Seguir"; }
+    else { TRAIN.start = performance.now(); TRAIN.running = true; TRAIN.timer = setInterval(draw, 200); b.textContent = "Pausar"; try { TRAIN.audio?.resume(); } catch { /* nada */ } }
+    draw();
+  };
+  $("#t-reset").onclick = () => { stopTimers(); TRAIN.acc = 0; TRAIN.marks = new Set(); $("#t-go").textContent = "Iniciar"; draw(); };
+
+  // guardar sesión
+  $("#t-eval").onsubmit = async (e) => {
+    e.preventDefault();
+    const scores = {}, notes = { evaluador: $("#t-who").value };
+    DIMS.forEach(([k]) => { const r = view.querySelector(`input[name="${k}"]:checked`); if (r) scores[k] = Number(r.value); const n = $(`#tn-${k}`).value.trim(); if (n) notes[k] = n; });
+    if (!Object.keys(scores).length) { $("#t-st").textContent = "Puntúa al menos una dimensión."; return; }
+    const t = Math.round(elapsed());
+    for (const [id, key] of [["t-arg", "argumento"], ["t-reb", "refutacion"], ["t-ext", "extension"], ["t-scr", "notas"]]) { const el = document.getElementById(id); if (el && el.value.trim()) notes[key] = el.value.trim(); }
+    try {
+      await api("training_save", { motion_id: mo ? mo.id : null, kind: exKey, position: pos, speaker: $("#t-spk").value,
+        prep_seconds: ex.down ? t || null : null, speech_seconds: ex.down ? null : t || null, scores, notes });
+      stopTimers(); route();
+    } catch (er) { $("#t-st").textContent = er.message; }
+  };
+  view.querySelectorAll("[data-tdel]").forEach((b) => b.onclick = async () => {
+    if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "¿Borrar?"; return; }
+    try { await api("training_delete", { id: Number(b.dataset.tdel) }); route(); } catch (er) { toast(er.message); }
+  });
+  draw();
+};
+
+// ===== Colombia =====
+VIEWS.colombia = async (_a, alive) => {
+  const topic = lsGet("coTopic", "todo");
+  const region = lsGet("coRegion", "") || "";
+  const d = await api("colombia", { topic, region: region || null, hours: 96, limit: 40 });
+  if (!alive()) return;
+  const evs = d.events || [];
+  view.innerHTML = `
+    <div class="layout">
+      <div>
+        <h2 class="view">Colombia</h2>
+        <p class="lede">Lo que pasa en el país y en las regiones, agrupado por tema, con los medios que lo cubren y enlaces a las fuentes primarias para contrastar.</p>
+        <div class="chips" role="group" aria-label="Tema">${CO_TOPICS.map(([k, l]) => `<button class="chip" data-topic="${k}" aria-pressed="${topic === k}">${l}</button>`).join("")}</div>
+        <div class="row" style="margin-bottom:var(--s-4)">
+          <div class="field" style="min-width:220px"><label for="co-reg">Departamento</label>
+            <select id="co-reg"><option value="">Todo el país</option>${DEPTS.map((r) => `<option ${r === region ? "selected" : ""}>${r}</option>`).join("")}</select></div>
+          <p class="small muted" style="margin:0 0 .5rem">${esc(plural(evs.length, "acontecimiento", "acontecimientos"))} en los últimos 4 días</p>
+        </div>
+        ${evs.length ? `<ul class="evlist">${evs.map((ev) => `<li>${eventItem(ev, { items: 3 })}</li>`).join("")}</ul>`
+          : `<div class="empty"><b>Nada en este tema${region ? " para " + esc(region) : ""} en los últimos 4 días.</b> Prueba con «Todo» o con otro departamento. Los temas se detectan por palabras clave en titulares y extractos.</div>`}
+      </div>
+      <aside class="rail">
+        <section>
+          <h3 class="sec" style="margin-top:0">Fuentes primarias</h3>
+          <p class="small muted" style="margin-top:0">Para contrastar con el documento original: proyectos de ley, sentencias, cifras oficiales, contratos.</p>
+          <div class="dirlist" style="columns:1">${PRIMARY.map(([g, ls]) => `<section><h4>${esc(g)}</h4><ul>${ls.map(([n, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(n)}</a></li>`).join("")}</ul></section>`).join("")}</div>
+          <p class="small muted">Comprobé el 27 oct 2026 que estas direcciones existen. Algunas bloquean lectores automáticos, pero abren en tu navegador.</p>
+        </section>
+      </aside>
+    </div>`;
+  view.querySelectorAll("[data-topic]").forEach((b) => b.onclick = () => { lsSet("coTopic", b.dataset.topic); route(); });
+  $("#co-reg").onchange = (e) => { lsSet("coRegion", e.target.value); route(); };
+};
+
+// ===== Buscar =====
+let lastSearch = lsGet("lastSearch", { q: "" });
+VIEWS.buscar = async (_a, alive) => {
+  const src = await api("sources");
+  if (!alive()) return;
+  const outlets = (src.outlets || []).map((o) => [o.id, o.name]);
+  const s = lastSearch;
+  view.innerHTML = `
+    <h2 class="view">Buscar</h2>
+    <p class="lede">En titulares, extractos y autores de todo lo que Mirador ha leído (los últimos 90 días), en cualquier idioma y sin importar tildes.</p>
+    <form id="sf">
+      <div class="row" style="margin-bottom:var(--s-3)">
+        <div class="field grow"><label for="sq">Palabras</label><input type="search" id="sq" value="${esc(s.q || "")}" placeholder="reforma pensional, Lula, &quot;Corte Constitucional&quot;, -fútbol"></div>
+        <button class="btn" type="submit">Buscar</button>
+      </div>
+      <details ${s.outlet || s.category || s.type || s.country || s.lang || s.from || s.to || s.region ? "open" : ""}><summary>Filtros</summary>
+      <div class="formgrid" style="margin-top:var(--s-3)">
+        <div class="field"><label for="so">Medio</label><select id="so"><option value="">Todos</option>${outlets.map(([i, n]) => `<option value="${esc(i)}" ${s.outlet === i ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div>
+        <div class="field"><label for="sc">Categoría</label><select id="sc"><option value="">Todas</option>${Object.entries(CATS).map(([k, l]) => `<option value="${k}" ${s.category === k ? "selected" : ""}>${esc(l)}</option>`).join("")}</select></div>
+        <div class="field"><label for="st">Tipo de pieza</label><select id="st"><option value="">Todos</option>${["noticia","análisis","opinión","verificación","en vivo","investigación","video","podcast"].map((t) => `<option ${s.type === t ? "selected" : ""}>${t}</option>`).join("")}</select></div>
+        <div class="field"><label for="sp">País mencionado</label><select id="sp"><option value="">Cualquiera</option>${Object.entries(COUNTRY).filter(([k]) => k !== "QA2").sort((a, b) => a[1].localeCompare(b[1], "es")).map(([k, n]) => `<option value="${k}" ${s.country === k ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div>
+        <div class="field"><label for="sr">Departamento</label><select id="sr"><option value="">Cualquiera</option>${DEPTS.map((r) => `<option ${s.region === r ? "selected" : ""}>${r}</option>`).join("")}</select></div>
+        <div class="field"><label for="sl">Idioma</label><select id="sl"><option value="">Todos</option>${[["es","Español"],["en","Inglés"],["pt","Portugués"]].map(([k, n]) => `<option value="${k}" ${s.lang === k ? "selected" : ""}>${n}</option>`).join("")}</select></div>
+        <div class="field"><label for="sfrom">Desde</label><input type="date" id="sfrom" value="${esc(s.from || "")}"></div>
+        <div class="field"><label for="sto">Hasta</label><input type="date" id="sto" value="${esc(s.to || "")}"></div>
+      </div></details>
+    </form>
+    <div id="sres" style="margin-top:var(--s-4)"></div>`;
+  const run = async () => {
+    const p = { q: $("#sq").value.trim(), outlet: $("#so").value || null, category: $("#sc").value || null, type: $("#st").value || null, country: $("#sp").value || null, region: $("#sr").value || null, lang: $("#sl").value || null, from: $("#sfrom").value || null, to: $("#sto").value || null, limit: 60 };
+    lastSearch = p; lsSet("lastSearch", p);
+    const box = $("#sres"); box.innerHTML = skel(4);
+    try {
+      const r = await api("search", p);
+      const rs = r.results || [];
+      box.innerHTML = rs.length ? `<p class="small muted">${plural(rs.length, "resultado", "resultados")}${rs.length === 60 ? " (se muestran los 60 más relevantes)" : ""}</p><ul class="alist">${rs.map((a) => articleRow(a)).join("")}</ul>`
+        : `<div class="empty"><b>Sin resultados.</b> Prueba con menos palabras o quita filtros. Para una frase exacta usa comillas; para excluir, un guion: <span class="mono">-fútbol</span>.</div>`;
+    } catch (e) { box.innerHTML = errorBox(e, run); }
+  };
+  $("#sf").onsubmit = (e) => { e.preventDefault(); run(); };
+  if (s.q || s.outlet || s.category || s.country || s.region) run();
+};
+
+// ===== Guardados =====
+VIEWS.guardados = async (_a, alive) => {
+  const d = await api("saved_list");
+  if (!alive()) return;
+  const items = d.items || [];
+  const cols = d.collections || [];
+  const fol = (d.followed || []).filter((f) => f.following);
+  const sel = lsGet("colFilter", "");
+  const shown = sel ? items.filter((i) => i.collection === sel) : items;
+  view.innerHTML = `
+    <h2 class="view">Guardados</h2>
+    <p class="lede">Tus artículos por colección, con notas, y los acontecimientos que decidiste seguir.</p>
+    ${fol.length ? `<h3 class="sec">Acontecimientos que sigues</h3><ul class="alist">${fol.map((f) => `<li><p class="a-title"><a href="#evento-${f.event_id}" style="color:var(--ink)">${esc(f.title)}</a></p><div class="ev-meta" style="margin:0">${esc(plural(f.outlets, "medio", "medios"))} · último ${esc(ago(f.last_seen))}</div>${f.questions ? `<p class="a-ex"><span class="lbl">Preguntas abiertas</span>${esc(f.questions)}</p>` : ""}</li>`).join("")}</ul>` : ""}
+    <h3 class="sec">Artículos · ${items.length}</h3>
+    <div class="row" style="margin-bottom:var(--s-3)">
+      <div class="chips" style="margin:0">${["", ...cols].map((c) => `<button class="chip" data-col="${esc(c)}" aria-pressed="${sel === c}">${c ? esc(c) : "Todas"}</button>`).join("")}</div>
+    </div>
+    <div class="row" style="margin-bottom:var(--s-4)"><div class="field" style="max-width:320px"><label for="newcol">Colección para lo próximo que guardes</label><input type="text" id="newcol" value="${esc(lsGet("lastCollection", "General"))}"></div></div>
+    ${shown.length ? `<ul class="alist">${shown.map((a) => articleRow(a, { extra: `<span class="muted">Colección: ${esc(a.collection)}</span>` }).replace("</li>", `<div class="field" style="max-width:72ch"><label for="n${a.id}">Nota</label><textarea id="n${a.id}" data-note="${a.id}" data-col="${esc(a.collection)}" style="min-height:3.2rem">${esc(a.note || "")}</textarea></div></li>`)).join("")}</ul>`
+      : `<div class="empty"><b>Aún no guardas nada.</b> Usa «Guardar» en cualquier artículo de Hoy, Colombia, Buscar o en una comparación.</div>`}`;
+  view.querySelectorAll("[data-col]").forEach((b) => { if (b.tagName === "BUTTON") b.onclick = () => { lsSet("colFilter", b.dataset.col); route(); }; });
+  $("#newcol").onchange = (e) => { lsSet("lastCollection", e.target.value.trim() || "General"); toast("Lo próximo se guardará en «" + (e.target.value.trim() || "General") + "»"); };
+  view.querySelectorAll("textarea[data-note]").forEach((t) => t.onchange = async () => {
+    try { await api("save", { article_id: Number(t.dataset.note), collection: t.dataset.col, note: t.value }); toast("Nota guardada"); } catch (e) { toast(e.message); }
+  });
+};
+
+// ===== Mociones =====
+VIEWS.mociones = async (_a, alive) => {
+  const f = lsGet("mf", { tournament_id: null, stage: null, category: null, q: "" });
+  const [t, m] = await Promise.all([api("tournaments"), api("motions", f)]);
+  if (!alive()) return;
+  const tours = t.tournaments || [];
+  const ms = m.motions || [];
+  const byT = {};
+  ms.forEach((x) => (byT[x.tname] ||= []).push(x));
+  view.innerHTML = `
+    <div class="layout">
+      <div>
+        <h2 class="view">Biblioteca de mociones</h2>
+        <p class="lede">Mociones importadas de torneos en Tabbycat, con su texto original, la info slide y las estadísticas publicadas. Cada una abre un espacio de preparación.</p>
+        <form id="mf" class="formgrid">
+          <div class="field"><label for="mt">Torneo</label><select id="mt"><option value="">Todos</option>${tours.map((x) => `<option value="${x.id}" ${f.tournament_id == x.id ? "selected" : ""}>${esc(x.short_name || x.name)}</option>`).join("")}</select></div>
+          <div class="field"><label for="ms">Etapa</label><select id="ms"><option value="">Todas</option>${[["preliminar","Preliminares"],["eliminatoria","Eliminatorias"],["sin ronda","Sin ronda"]].map(([k, l]) => `<option value="${k}" ${f.stage === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+          <div class="field"><label for="mc">Categoría</label><select id="mc"><option value="">Todas</option>${Object.entries(MCATS).map(([k, l]) => `<option value="${k}" ${f.category === k ? "selected" : ""}>${esc(l)}</option>`).join("")}</select></div>
+          <div class="field"><label for="mq">Palabras</label><input type="search" id="mq" value="${esc(f.q || "")}" placeholder="patrimonio, IA, Chipre"></div>
+        </form>
+        ${ms.length ? Object.entries(byT).map(([tn, list]) => `<h3 class="sec">${esc(tn)} · ${list.length}</h3><ul class="mlist">${list.map((x) => `<li>
+            <div class="rd">${esc(x.round_name || "Sin ronda")}<br>${x.stage === "eliminatoria" ? "eliminatoria" : x.stage === "sin ronda" ? "no usada" : ""}</div>
+            <div><a class="mt" href="#mocion-${x.id}">${esc(x.text)}</a>
+              <div class="ev-meta" style="margin:.3rem 0 0">${x.reference ? `<span>${esc(x.reference)}</span>` : ""}${(x.categories || []).map((c) => `<span>${esc(MCATS[c] || c)}</span>`).join("")}${x.prepared ? `<span style="color:var(--good)">● preparada</span>` : ""}${!x.has_slide ? `<span>sin info slide</span>` : ""}</div></div></li>`).join("")}</ul>`).join("")
+          : `<div class="empty"><b>No hay mociones con estos filtros.</b> Quita filtros o importa otro torneo.</div>`}
+      </div>
+      <aside class="rail">
+        <section class="card">
+          <h3 class="sec" style="margin-top:0">Importar un torneo</h3>
+          <p class="small" style="margin-top:0">Pega la dirección de cualquier torneo en Tabbycat o CalicoTab. Se guarda el texto original, la info slide y las estadísticas, con la fecha de consulta.</p>
+          <div class="field"><label for="iu">Dirección del torneo</label><input type="url" id="iu" placeholder="https://sitio.calicotab.com/open/motions/statistics/"></div>
+          <div class="row" style="margin-top:var(--s-3)"><button class="btn" id="ib">Importar</button><span class="small" id="ist"></span></div>
+        </section>
+        <section>
+          <h3 class="sec">Torneos importados</h3>
+          ${tours.map((x) => `<div style="padding:.6rem 0;border-top:1px solid var(--rule)"><b style="font:600 .98rem/1.3 var(--f-display)">${esc(x.name)}</b>
+            <div class="prov">${esc(x.format || "Formato no determinado")} · ${x.motion_count ?? 0} mociones · ${esc(x.import_status || "")}<br>consultado ${esc(fmtAbs(x.imported_at))}</div>
+            ${(x.import_notes || []).length ? `<div class="small muted">${x.import_notes.map(esc).join(" ")}</div>` : ""}
+            <div class="small"><a href="${esc(x.source_url)}" target="_blank" rel="noopener">Página de origen</a> · <button class="linkbtn" data-reimport="${esc(x.source_url)}">Volver a importar</button></div></div>`).join("") || `<p class="small">Ninguno todavía.</p>`}
+        </section>
+      </aside>
+    </div>`;
+  const apply = () => { lsSet("mf", { tournament_id: $("#mt").value || null, stage: $("#ms").value || null, category: $("#mc").value || null, q: $("#mq").value.trim() }); route(); };
+  ["#mt", "#ms", "#mc"].forEach((s) => $(s).onchange = apply);
+  $("#mf").onsubmit = (e) => { e.preventDefault(); apply(); };
+  const doImport = async (url) => {
+    const st = $("#ist"); const b = $("#ib"); b.disabled = true; st.textContent = "Importando…";
+    try {
+      const r = await api("import_tabbycat", { url });
+      for (let i = 0; i < 20; i++) {
+        await new Promise((ok) => setTimeout(ok, 2500));
+        const rr = await api("request_result", { request: r.request });
+        if (rr && rr.done) {
+          if (rr.body && rr.body.error) { st.textContent = "Error: " + rr.body.error; break; }
+          if (rr.error) { st.textContent = "Error: " + rr.error; break; }
+          st.textContent = `Listo: ${rr.body.motions} mociones (${rr.body.status}).`;
+          setTimeout(route, 1200); break;
+        }
+        if (i === 19) st.textContent = "Sigue en curso; recarga en un minuto.";
+      }
+    } catch (e) { st.textContent = e.message; }
+    b.disabled = false;
+  };
+  $("#ib").onclick = () => { const u = $("#iu").value.trim(); if (!/^https?:\/\/[^/]+\/[^/]+/.test(u)) { $("#ist").textContent = "Pega una dirección que incluya el torneo (…/open/…)."; return; } doImport(u); };
+  view.querySelectorAll("[data-reimport]").forEach((b) => b.onclick = () => doImport(b.dataset.reimport));
+};
+
+function statBlock(s) {
+  if (!s) return `<p class="small muted">Sin estadísticas publicadas.</p>`;
+  if (s.kind === "preliminar") {
+    const pos = s.position || {};
+    const dist = s.distribution || {};
+    return `
+      <p class="small" style="margin-top:0">Puntos promedio por posición en <b>${esc(s.debates)}</b> debates (3 = primer lugar, 0 = cuarto).</p>
+      <div class="bars" role="img" aria-label="Puntos promedio por posición">
+        ${["OG","OO","CG","CO"].map((p) => `<div class="bar" title="${p}: ${pos[p] ?? "–"} puntos en promedio"><b>${p}</b><div class="track"><div class="fill" style="width:${((pos[p] || 0) / 3) * 100}%"></div></div><span class="v">${pos[p] != null ? Number(pos[p]).toFixed(2) : "–"}</span></div>`).join("")}
+      </div>
+      <div class="axis"><span></span><div><span>0</span><span>1</span><span>2</span><span>3</span></div><span></span></div>
+      <p class="small" style="margin:.8rem 0 0">Gobierno ${esc(s.bench?.gov)} · Oposición ${esc(s.bench?.opp)} &nbsp;|&nbsp; Apertura ${esc(s.half?.opening)} · Cierre ${esc(s.half?.closing)}</p>
+      <div class="scroll"><table class="dist"><caption class="small muted" style="text-align:left">Cuántas veces quedó cada posición en cada lugar</caption>
+        <tr><th>Posición</th><th>1.º</th><th>2.º</th><th>3.º</th><th>4.º</th></tr>
+        ${["OG","OO","CG","CO"].map((p) => `<tr><td>${p}</td>${["3","2","1","0"].map((k) => `<td>${dist[p]?.[k] ?? 0}</td>`).join("")}</tr>`).join("")}
+      </table></div>`;
+  }
+  if (s.kind === "eliminatoria") {
+    const a = s.advancement || {};
+    return `<p class="small" style="margin-top:0">Resultados de ${esc(s.debates)} ${s.debates === 1 ? "debate" : "debates"} de eliminación.</p>
+      <div class="scroll"><table class="dist"><tr><th>Posición</th><th>Avanzaron</th><th>De</th></tr>
+      ${["OG","OO","CG","CO"].map((p) => `<tr><td>${p}</td><td>${a[p]?.advanced ?? "–"}</td><td>${a[p]?.of ?? "–"}</td></tr>`).join("")}</table></div>`;
+  }
+  return `<p class="small muted">Sin estadísticas publicadas.</p>`;
+}
+
+VIEWS.mocion = async (id, alive) => {
+  const d = await api("motion", { id });
+  if (!alive()) return;
+  const m = d.motion, t = d.tournament || {};
+  const cats = d.categories || [];
+  const prep = (d.prep && d.prep.sections) || {};
+  const sources = (d.prep && d.prep.sources) || [];
+  const guides = [...new Set(cats.map((c) => METHOD[c]).filter(Boolean))];
+  const discs = [...new Set(cats.flatMap((c) => CAT2DISC[c] || []))];
+  let checked;
+  try { checked = new Set(JSON.parse(prep._checklist || "[]")); } catch { checked = new Set(); }
+  const slideParas = (m.info_slide_text || "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  view.innerHTML = `
+    <p class="small"><a href="#mociones">← Biblioteca de mociones</a></p>
+    <div class="prov">${esc(t.name)} · ${esc(m.round_name || "Sin ronda")}${m.stage === "eliminatoria" ? " · eliminatoria" : ""} · ${esc(t.format || "formato no determinado")}</div>
+    <p class="motion-text">${esc(m.text_original)}</p>
+    <div class="ev-meta">${m.reference ? `<span>Referencia: ${esc(m.reference)}</span>` : ""}<span>Idioma: ${esc(m.language)}</span><span>Consultado ${esc(fmtAbs(m.retrieved_at))}</span><a href="${esc(m.source_url)}" target="_blank" rel="noopener">Página de origen</a><a href="#entrenar-${m.id}">Entrenar con esta moción</a></div>
+    <div class="layout" style="margin-top:var(--s-4)">
+      <div>
+        <h3 class="sec">Info slide</h3>
+        ${slideParas.length ? `<div class="slide">${slideParas.map((p) => `<p>${esc(p)}</p>`).join("")}</div><p class="small muted">Texto original del torneo, sin cambios.</p>` : `<p class="small muted">El torneo no publicó info slide para esta moción.</p>`}
+
+        <h3 class="sec">Espacio de preparación</h3>
+        ${guides.length ? `<div class="note"><b>Método para esta moción.</b> ${guides.map(esc).join(" ")}</div>` : ""}
+        <div class="prep-grid" id="prep">
+          ${PREP.map(([k, label, hint]) => k === "estrategia" ? `
+            <div class="prep-sec"><h4>${label}</h4><div class="pos4">${["OG","OO","CG","CO"].map((p) => `<div class="field"><label for="p-${p}">${p}</label><textarea id="p-${p}" data-k="estrategia_${p.toLowerCase()}" style="min-height:4rem">${esc(prep["estrategia_" + p.toLowerCase()] || "")}</textarea></div>`).join("")}</div></div>`
+            : `<div class="prep-sec"><h4><label for="p-${k}">${label}</label></h4>${hint ? `<p class="hint">${esc(hint)}</p>` : ""}<textarea id="p-${k}" data-k="${k}">${esc(prep[k] || "")}</textarea></div>`).join("")}
+          <div class="prep-sec"><h4>Bibliografía verificable</h4><p class="hint">Cada fuente con enlace y fecha. Antes de reutilizarla en otra moción, revisa que siga siendo pertinente.</p>
+            <div class="scroll"><table class="biblio" id="bib"><tr><th>Título o descripción</th><th>Enlace</th><th>Fecha</th><th>Tipo</th><th></th></tr>
+              ${sources.map((s, i) => bibRow(s, i)).join("")}</table></div>
+            <button class="btn quiet" id="bib-add" style="margin-top:var(--s-2)">Agregar fuente</button>
+          </div>
+        </div>
+        <div class="row" style="margin-top:var(--s-3)"><button class="btn" id="prep-save">Guardar preparación</button><span class="savestate" id="prep-st">${d.prep ? "Última vez: " + esc(fmtAbs(d.prep.updated_at)) : "Se guarda también al salir de cada campo."}</span></div>
+
+        ${discs.length ? `<h3 class="sec">Lista de verificación por disciplina</h3>
+        <div class="formgrid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))" id="checks">${discs.map((k) => `<div class="prep-sec"><h4>${esc(CHECK_NAMES[k])}</h4><ul class="checklist">${CHECKS[k].map((item, j) => { const key = k + ":" + j; return `<li><label><input type="checkbox" data-chk="${key}" ${checked.has(key) ? "checked" : ""}> ${esc(item)}</label></li>`; }).join("")}</ul></div>`).join("")}</div>
+        <p class="small muted">Según las categorías de la moción. Marca lo que ya cubre tu preparación; se guarda con ella.</p>` : ""}
+
+        <h3 class="sec">Conocimiento reutilizable</h3>
+        <div id="reuse">${skel(3)}</div>
+      </div>
+      <aside class="rail">
+        <section><h3 class="sec" style="margin-top:0">Estadísticas del torneo</h3>${statBlock(m.stats)}
+          <p class="small muted">${esc(m.stats_note || "")} Describen cómo les fue a las posiciones en este torneo; no dicen si un argumento es verdadero ni sustituyen tu evaluación de la evidencia.</p></section>
+        <section><h3 class="sec">Categorías</h3>
+          <div class="chips" id="mcats">${Object.entries(MCATS).map(([k, l]) => `<button class="chip" data-mc="${k}" aria-pressed="${cats.includes(k)}">${esc(l)}</button>`).join("")}</div>
+          <p class="small muted" style="margin-top:0">Las marcadas al importar son sugerencias por palabras clave. Toca para corregirlas.</p>
+          <div class="field"><label for="mdiff">Dificultad (tu criterio)</label><select id="mdiff"><option value="">Sin definir</option>${["baja","media","alta"].map((x) => `<option ${m.difficulty === x ? "selected" : ""}>${x}</option>`).join("")}</select></div>
+        </section>
+        <section><h3 class="sec">Noticias relacionadas</h3>
+          ${(d.related_news || []).length ? `<ul class="alist">${d.related_news.map((a) => `<li style="padding:.6rem 0"><div class="a-head"><span class="out">${esc(a.outlet_name)}</span><span class="mono">${esc(fmtAbs(a.published_at))}</span></div><a href="${esc(outLink(a))}" target="_blank" rel="noopener" style="font:500 .98rem/1.35 var(--f-display)">${esc(a.title)}</a></li>`).join("")}</ul><p class="small muted">Por coincidencia de palabras de la moción en los últimos 60 días. Revisa que de verdad traten el mismo asunto.</p>` : `<p class="small muted">No hay noticias recientes con las palabras clave de esta moción.</p>`}
+        </section>
+        <section><h3 class="sec">Conceptos</h3>
+          <div id="mconcepts"><p class="small muted">Cargando…</p></div>
+          <form id="mcf" class="stack" style="margin-top:var(--s-2)">
+            <div class="field"><label for="mcf-n">Enlazar concepto, caso, estudio o actor</label><input type="text" id="mcf-n" list="mcf-l" placeholder="Soberanía"><datalist id="mcf-l"></datalist></div>
+            <div class="row"><div class="field" style="flex:1"><label for="mcf-k">Tipo</label><select id="mcf-k">${CKINDS.map((k) => `<option>${k}</option>`).join("")}</select></div><button class="btn quiet" type="submit">Enlazar</button></div>
+            <span class="small" id="mcf-st"></span>
+          </form>
+        </section>
+      </aside>
+    </div>`;
+  // guardar preparación
+  const collect = () => {
+    const sections = {};
+    view.querySelectorAll("#prep textarea[data-k]").forEach((t) => { if (t.value.trim()) sections[t.dataset.k] = t.value; });
+    const ch = [...view.querySelectorAll("[data-chk]:checked")].map((x) => x.dataset.chk);
+    if (ch.length) sections._checklist = JSON.stringify(ch);
+    const srcs = [...view.querySelectorAll("#bib tr[data-i]")].map((tr) => ({
+      title: tr.querySelector("[data-f=title]").value.trim(), url: tr.querySelector("[data-f=url]").value.trim(),
+      date: tr.querySelector("[data-f=date]").value, type: tr.querySelector("[data-f=type]").value,
+    })).filter((s) => s.title || s.url);
+    return { sections, sources: srcs };
+  };
+  let saving = false;
+  const save = async () => {
+    if (saving) return; saving = true;
+    const { sections, sources } = collect();
+    const missing = sources.filter((s) => !s.url || !s.date).length;
+    $("#prep-st").textContent = "Guardando…";
+    try { await api("motion_prep", { id, sections, sources }); $("#prep-st").textContent = "Guardado " + fmtTime(new Date()) + (missing ? ` · ${missing} fuente(s) sin enlace o fecha` : ""); }
+    catch (e) { $("#prep-st").textContent = e.message; }
+    saving = false;
+  };
+  $("#prep-save").onclick = save;
+  view.querySelectorAll("#prep textarea").forEach((t) => { t.addEventListener("change", save); });
+  $("#bib-add").onclick = () => { const tb = $("#bib tbody") || $("#bib"); tb.insertAdjacentHTML("beforeend", bibRow({}, Date.now())); };
+  $("#bib").addEventListener("change", save);
+  $("#bib").addEventListener("click", (e) => { const b = e.target.closest("[data-rm]"); if (b) { b.closest("tr").remove(); save(); } });
+  view.querySelectorAll("[data-mc]").forEach((b) => b.onclick = async () => {
+    const on = b.getAttribute("aria-pressed") === "true";
+    b.setAttribute("aria-pressed", String(!on));
+    try { await api("motion_tags", on ? { id, remove: [b.dataset.mc] } : { id, add: [b.dataset.mc] }); } catch (e) { toast(e.message); b.setAttribute("aria-pressed", String(on)); }
+  });
+  $("#mdiff").onchange = async (e) => { try { await api("motion_tags", { id, difficulty: e.target.value }); toast("Dificultad guardada"); } catch (er) { toast(er.message); } };
+  view.querySelectorAll("[data-chk]").forEach((c) => c.addEventListener("change", save));
+
+  // conceptos y conocimiento reutilizable (carga aparte para no demorar la vista)
+  const PREPNAME = Object.fromEntries(PREP.map(([k, l]) => [k, l]).concat(POS.map((p) => ["estrategia_" + p.toLowerCase(), "Estrategia " + p])));
+  const loadKnowledge = async () => {
+    let k;
+    try { k = await api("motion_knowledge", { id }, { fresh: true }); } catch (e) { $("#reuse").innerHTML = errorBox(e, loadKnowledge); return; }
+    if (!alive()) return;
+    $("#mconcepts").innerHTML = (k.concepts || []).length ? `<div class="terms" style="margin-top:0">${k.concepts.map((c) => `<span class="term"><a href="#concepto-${c.id}" style="color:var(--ink);text-decoration:none">${esc(c.name)}</a> <button class="linkbtn" data-cunl="${c.link_id}" aria-label="Quitar ${esc(c.name)}">×</button></span>`).join("")}</div>` : `<p class="small muted" style="margin:0">Ninguno todavía. Los conceptos conectan esta moción con otras y con noticias en el <a href="#conocimiento">mapa de conocimiento</a>.</p>`;
+    view.querySelectorAll("[data-cunl]").forEach((b) => b.onclick = async () => { try { await api("concept_unlink", { id: Number(b.dataset.cunl) }); loadKnowledge(); } catch (er) { toast(er.message); } });
+    const rel = k.related || [];
+    $("#reuse").innerHTML = rel.length ? `<p class="small muted" style="margin-top:0">Mociones conectadas por conceptos que enlazaste, categorías compartidas o texto parecido. Lo que preparaste para ellas puede servir aquí, pero verifica que siga siendo pertinente: otra moción, otra fecha, otro contexto.</p>
+      ${rel.map((r) => { const secs = Object.entries(r.prep_sections || {}); const why = [
+          (r.shared_concepts || []).length ? "conceptos: " + r.shared_concepts.join(", ") : "",
+          (r.shared_categories || []).length ? "categorías: " + r.shared_categories.map((c) => MCATS[c] || c).join(", ") : "",
+          r.text_similarity >= 0.25 ? "texto parecido" : ""].filter(Boolean).join(" · ");
+        return `<div class="reuse"><a href="#mocion-${r.id}" style="color:var(--ink);font:500 1rem/1.35 var(--f-display);text-decoration:none">${esc(r.text)}</a>
+          <div class="prov">${esc(r.tournament)} · ${esc(r.round || "")} · ${esc(why)}</div>
+          ${secs.length || (r.sources || []).length ? `<details style="margin-top:var(--s-2)"><summary>${esc(plural(secs.length, "sección preparada", "secciones preparadas"))}${(r.sources || []).length ? ` y ${esc(plural(r.sources.length, "fuente", "fuentes"))}` : ""} · ${esc(fmtAbs(r.prep_updated))}</summary>
+            ${secs.map(([sk, sv]) => `<div style="margin-top:var(--s-2)"><b class="small">${esc(PREPNAME[sk] || sk)}</b><pre>${esc(sv)}</pre>${PREPNAME[sk] ? `<button class="linkbtn" data-copy="${esc(sk)}" data-from="${r.id}">Copiar a mi preparación</button>` : ""}</div>`).join("")}
+            ${(r.sources || []).length ? `<table class="biblio" style="margin-top:var(--s-2)">${r.sources.map((s, j) => `<tr><td>${esc(s.title)}</td><td>${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">enlace</a>` : ""}</td><td class="mono">${esc(s.date || "sin fecha")}</td><td><button class="linkbtn" data-cpsrc="${j}" data-from="${r.id}">Agregar a mi bibliografía</button></td></tr>`).join("")}</table>` : ""}
+          </details>` : `<p class="small muted" style="margin:.3rem 0 0">Sin preparación guardada todavía.</p>`}</div>`; }).join("")}`
+      : `<p class="small muted" style="margin-top:0">Ninguna moción conectada todavía. Enlaza conceptos a esta y a otras mociones para que aparezcan aquí.</p>`;
+    view.querySelectorAll("[data-copy]").forEach((b) => b.onclick = () => {
+      const r = rel.find((x) => String(x.id) === b.dataset.from); const sk = b.dataset.copy;
+      const ta = view.querySelector(`#prep textarea[data-k="${sk}"]`); if (!ta || !r) return;
+      ta.value = (ta.value.trim() ? ta.value.trim() + "\n\n" : "") + `[De «${r.text.slice(0, 80)}», preparado ${fmtDate(r.prep_updated)}. Verificar pertinencia.]\n` + r.prep_sections[sk];
+      save(); b.textContent = "Copiado"; b.disabled = true;
+    });
+    view.querySelectorAll("[data-cpsrc]").forEach((b) => b.onclick = () => {
+      const r = rel.find((x) => String(x.id) === b.dataset.from); const s = r && r.sources[Number(b.dataset.cpsrc)]; if (!s) return;
+      const tb = $("#bib tbody") || $("#bib"); tb.insertAdjacentHTML("beforeend", bibRow(s, Date.now()));
+      save(); b.textContent = "Agregada"; b.disabled = true;
+    });
+  };
+  loadKnowledge();
+  api("concepts").then((c) => { const dl = $("#mcf-l"); if (dl) dl.innerHTML = (c.concepts || []).map((x) => `<option value="${esc(x.name)}">${esc(x.kind)}</option>`).join(""); }).catch(() => {});
+  $("#mcf").onsubmit = async (e) => {
+    e.preventDefault();
+    const name = $("#mcf-n").value.trim(); if (!name) return;
+    try { await api("concept_save", { name, kind: $("#mcf-k").value, link: { motion_id: id } }); $("#mcf-n").value = ""; $("#mcf-st").textContent = ""; loadKnowledge(); }
+    catch (er) { $("#mcf-st").textContent = er.message; }
+  };
+};
+function bibRow(s, i) {
+  return `<tr data-i="${i}">
+    <td><input type="text" data-f="title" aria-label="Título" value="${esc(s.title || "")}"></td>
+    <td><input type="url" data-f="url" aria-label="Enlace" value="${esc(s.url || "")}" placeholder="https://"></td>
+    <td><input type="date" data-f="date" aria-label="Fecha" value="${esc(s.date || "")}"></td>
+    <td><select data-f="type" aria-label="Tipo">${["primaria","académica","estadística","periodística","otra"].map((x) => `<option ${s.type === x ? "selected" : ""}>${x}</option>`).join("")}</select></td>
+    <td><button class="linkbtn" data-rm="1" aria-label="Quitar fuente">Quitar</button></td></tr>`;
+}
+
+// ===== Fuentes y preferencias =====
+VIEWS.fuentes = async (_a, alive) => {
+  const d = await api("sources", {}, { fresh: true });
+  if (!alive()) return;
+  const set = d.settings || {};
+  SETTINGS = set;
+  const prio = set.priority_categories || [];
+  const outs = d.outlets || [];
+  const feedsN = outs.reduce((n, o) => n + (o.feeds || []).filter((f) => f.active).length, 0);
+  const errs = outs.reduce((n, o) => n + (o.feeds || []).filter((f) => f.active && f.last_error).length, 0);
+  view.innerHTML = `
+    <div class="layout">
+      <div>
+        <h2 class="view">Fuentes</h2>
+        <p class="lede">${feedsN} feeds activos de ${outs.length} medios${errs ? `, ${errs} con error en la última lectura` : ", todos respondieron en la última lectura"}. Cada feed se lee cada 30 minutos; lo que falla 5 veces seguidas pasa a leerse cada 6 horas.</p>
+        <div class="row" style="margin-bottom:var(--s-4)"><button class="btn quiet" id="refresh">Actualizar ahora</button><span class="small muted" id="rst"></span></div>
+        ${outs.map((o) => `<div class="src-out">
+          <h4>${esc(o.name)} <span class="small muted" style="font:400 .8rem var(--f-ui)">${esc(COUNTRY[o.country] || o.country || "")} · ${esc(o.kind)}${ACCESS[o.access] ? " · " + esc(ACCESS[o.access]) : ""} · ${o.articles_7d} piezas en 7 días</span></h4>
+          ${o.notes ? `<div class="small muted">${esc(o.notes)}</div>` : ""}
+          <label class="toggle small" style="margin-top:.3rem"><input type="checkbox" data-hide="${esc(o.id)}" ${o.hidden ? "checked" : ""}> Ocultar este medio en mis vistas</label>
+          ${(o.feeds || []).map((f) => `<div class="feed">
+            <div><span class="dot ${!f.active ? "off" : f.last_error ? "err" : "ok"}"></span><b>${esc(f.label)}</b> <span class="muted small">${esc(f.mechanism === "news_sitemap" ? "sitemap de noticias" : "RSS")}</span>
+              <div class="st">${f.active ? (f.last_error ? `Error: ${esc(f.last_error)}` : f.last_fetched_at ? `Leído ${esc(ago(f.last_fetched_at))} · ${f.last_items ?? "?"} ítems · ${f.last_new ?? 0} nuevos` : "Pendiente de primera lectura") : esc(f.notes || "Apagado")}</div>
+              <div class="st">${esc(f.url)}</div></div>
+            <label class="toggle"><input type="checkbox" data-feed="${f.id}" ${f.active ? "checked" : ""}> Activo</label>
+          </div>`).join("")}
+        </div>`).join("")}
+      </div>
+      <aside class="rail">
+        <section class="card">
+          <h3 class="sec" style="margin-top:0">Agregar un feed RSS</h3>
+          <form id="af" class="stack">
+            <div class="field"><label for="af-url">Dirección del feed</label><input type="url" id="af-url" required placeholder="https://medio.com/feed/"></div>
+            <div class="field"><label for="af-out">Medio</label><select id="af-out"><option value="__new">Medio nuevo…</option>${outs.map((o) => `<option value="${esc(o.id)}">${esc(o.name)}</option>`).join("")}</select></div>
+            <div id="af-new" class="stack">
+              <div class="field"><label for="af-name">Nombre del medio</label><input type="text" id="af-name"></div>
+              <div class="formgrid" style="margin:0">
+                <div class="field"><label for="af-c">País (código)</label><input type="text" id="af-c" maxlength="2" placeholder="CO"></div>
+                <div class="field"><label for="af-acc">Acceso</label><select id="af-acc"><option value="abierto">Abierto</option><option value="medido">Muro medido</option><option value="suscripcion">Suscripción</option><option value="mixto">Mixto</option></select></div>
+              </div>
+            </div>
+            <div class="formgrid" style="margin:0">
+              <div class="field"><label for="af-label">Sección</label><input type="text" id="af-label" placeholder="Política"></div>
+              <div class="field"><label for="af-lang">Idioma</label><select id="af-lang"><option value="es">Español</option><option value="en">Inglés</option><option value="pt">Portugués</option><option value="fr">Francés</option></select></div>
+            </div>
+            <button class="btn" type="submit">Agregar y leer</button><div class="small" id="af-st"></div>
+          </form>
+          <p class="small muted">Solo se aceptan feeds públicos. Si el medio no ofrece RSS, Mirador no extrae su sitio.</p>
+        </section>
+        <section class="card">
+          <h3 class="sec" style="margin-top:0">Preferencias</h3>
+          <div class="stack">
+            <div class="field"><label>Temas prioritarios</label>
+              <div class="chips" style="margin:0">${Object.entries(CATS).map(([k, l]) => `<button class="chip" data-prio="${k}" aria-pressed="${prio.includes(k)}">${esc(l)}</button>`).join("")}</div>
+              <span class="small muted">Se usan para la sección «Fuera de tus temas»; no esconden nada de la portada.</span></div>
+            <div class="field"><label for="dc">Historias en el resumen del día</label><input type="number" id="dc" min="5" max="10" value="${esc(set.daily_count ?? 8)}"></div>
+            <div class="field"><label for="reg">Mi departamento</label><select id="reg"><option value="">Sin definir</option>${DEPTS.map((r) => `<option ${set.region === r ? "selected" : ""}>${r}</option>`).join("")}</select></div>
+            <div class="field"><label for="px">Prefijo del proxy de tu biblioteca</label><input type="url" id="px" value="${esc(set.proxy_prefix || "")}" placeholder="https://ezproxy.tu-universidad.edu.co/login?url=">
+              <span class="small muted">Se antepone a los enlaces de medios con suscripción o muro, para abrirlos con tu acceso universitario. Pídelo a tu biblioteca.</span></div>
+          </div>
+        </section>
+      </aside>
+    </div>`;
+  view.querySelectorAll("[data-feed]").forEach((c) => c.onchange = async () => { try { await api("feed_toggle", { id: Number(c.dataset.feed), active: c.checked }); toast(c.checked ? "Feed activado" : "Feed apagado"); } catch (e) { toast(e.message); c.checked = !c.checked; } });
+  view.querySelectorAll("[data-hide]").forEach((c) => c.onchange = async () => { try { await api("outlet_hide", { id: c.dataset.hide, hidden: c.checked }); toast(c.checked ? "Medio oculto en tus vistas" : "Medio visible otra vez"); } catch (e) { toast(e.message); c.checked = !c.checked; } });
+  const saveSetting = async (key, value) => { try { await api("settings_set", { key, value }); SETTINGS[key] = value; toast("Preferencia guardada"); } catch (e) { toast(e.message); } };
+  view.querySelectorAll("[data-prio]").forEach((b) => b.onclick = () => {
+    b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true"));
+    saveSetting("priority_categories", [...view.querySelectorAll("[data-prio][aria-pressed=true]")].map((x) => x.dataset.prio));
+  });
+  $("#dc").onchange = (e) => saveSetting("daily_count", Math.max(5, Math.min(10, Number(e.target.value) || 8)));
+  $("#reg").onchange = (e) => { saveSetting("region", e.target.value); lsSet("coRegion", e.target.value); };
+  $("#px").onchange = (e) => saveSetting("proxy_prefix", e.target.value.trim());
+  const outSel = $("#af-out"); const newBox = $("#af-new");
+  outSel.onchange = () => (newBox.hidden = outSel.value !== "__new");
+  $("#af").onsubmit = async (e) => {
+    e.preventDefault();
+    const st = $("#af-st");
+    const p = { url: $("#af-url").value.trim(), label: $("#af-label").value.trim(), language: $("#af-lang").value };
+    if (outSel.value === "__new") {
+      const name = $("#af-name").value.trim();
+      if (!name) { st.textContent = "Escribe el nombre del medio."; return; }
+      p.outlet_new = { id: norm(name).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40), name, country: $("#af-c").value.trim().toUpperCase(), access: $("#af-acc").value };
+    } else p.outlet_id = outSel.value;
+    st.textContent = "Agregando…";
+    try { const r = await api("feed_add", p); st.textContent = r.note; setTimeout(route, 20000); } catch (er) { st.textContent = er.message; }
+  };
+  $("#refresh").onclick = async () => { const b = $("#refresh"); b.disabled = true; $("#rst").textContent = "Leyendo feeds…"; try { await api("ingest_now"); $("#rst").textContent = "Pedido enviado. Los cambios aparecen en 1 a 2 minutos."; } catch (e) { $("#rst").textContent = e.message; } b.disabled = false; };
+};
+
+// ===== Método =====
+VIEWS.metodo = async () => {
+  view.innerHTML = `<div class="method">
+    <h2 class="view">Cómo funciona Mirador</h2>
+    <p class="lede">Lo que ves aquí es texto publicado por un medio, un cálculo sobre ese texto o algo que escribiste tú. Mirador no usa inteligencia artificial para resumir, traducir, clasificar ni decidir nada.</p>
+    <h3>De dónde vienen las noticias</h3>
+    <p>Mirador lee los feeds RSS públicos de cada medio cada 30 minutos (y el sitemap de noticias de El Espectador, que no tiene RSS funcional). Guarda el titular, el extracto que el medio publica en su feed, la fecha, el autor y el enlace. Nunca descarga el artículo completo: para leerlo, abres el original. Los medios con suscripción se marcan como tales.</p>
+    <h3>Cómo se agrupan en acontecimientos</h3>
+    <p>Cada pieza se reduce a sus términos distintivos: nombres propios, cifras, lugares y palabras poco comunes, con equivalencias entre español, inglés y portugués para palabras frecuentes de la actualidad. Dos piezas se agrupan cuando comparten suficientes términos distintivos en una ventana de 48 horas. Funciona bien con hechos que comparten nombres y cifras; a veces separa un mismo hecho contado con otras palabras, sobre todo entre idiomas.</p>
+    <h3>Cómo se ordena la portada</h3>
+    <p>Por número de fuentes de origen independientes, variedad de países de los medios que lo cubren e idiomas, con una caída por antigüedad. Varias notas firmadas con la misma agencia cuentan como una sola fuente de origen. No se usan clics, redes sociales ni popularidad.</p>
+    <h3>Qué muestra la comparación</h3>
+    <ul>
+      <li>La cronología de quién publicó qué y cuándo, con el extracto literal de cada medio.</li>
+      <li>Los términos que comparten las coberturas y los que solo usa un medio. Es una comparación de vocabulario, no un juicio de sesgo.</li>
+      <li>Cifras y citas entre comillas copiadas de los extractos, para que veas si los medios dan los mismos números.</li>
+      <li>Qué medios dependen de la misma agencia.</li>
+      <li>Un espacio para tus notas y preguntas abiertas: lo que falta confirmar lo decides tú, no la aplicación.</li>
+    </ul>
+    <h3>Clasificación por reglas</h3>
+    <p>Las categorías, los países y los departamentos se detectan con listas de palabras clave. Hay errores: una nota puede quedar en una categoría vecina o sin categoría. El tipo de pieza (noticia, análisis, opinión, verificación, en vivo) sale de la dirección y la sección del medio.</p>
+    <h3>Mociones</h3>
+    <p>El importador usa la API pública de Tabbycat y la página pública de estadísticas. Guarda el texto y la info slide sin modificarlos, la ronda, la etapa, las estadísticas tal como se publican, la URL de origen y la fecha de consulta. Las categorías temáticas son sugerencias por palabras clave que puedes corregir. Las estadísticas describen resultados del torneo; no son evidencia de que un argumento sea verdadero.</p>
+    <h3>La semana y los hilos</h3>
+    <p>La vista semanal no está redactada: cuenta piezas por día, categoría y país, y compara con la semana anterior cuando hay datos suficientes. Los hilos unen acontecimientos distintos de los últimos 7 días que comparten al menos dos términos distintivos (nombres, lugares) y ocurrieron con no más de 4 días de diferencia; los términos demasiado comunes (como «gobierno» o «elecciones») no cuentan. Se recalculan cada 30 minutos.</p>
+    <h3>Cambios de titular</h3>
+    <p>Cada vez que Mirador vuelve a leer un feed y encuentra la misma dirección con otro titular u otro extracto, guarda la versión anterior y la nueva con la hora en que lo detectó. No sabe si fue una corrección, una actualización o un ajuste de estilo; eso se ve en el original. Solo detecta cambios mientras la pieza sigue en el feed.</p>
+    <h3>Expedientes</h3>
+    <p>Un expediente es una búsqueda guardada más los hitos que tú documentas (anuncio, texto original, debates, modificaciones, votaciones, decisiones judiciales, efectos). Las piezas que encuentra la búsqueda son candidatas; solo las que marcas como hito forman la historia documentada. Un hito sin enlace a su fuente queda señalado.</p>
+    <h3>Contexto</h3>
+    <p>Cada tema de la biblioteca trae preguntas guía en tres niveles y enlaces a fuentes primarias (normas, datos oficiales, instituciones, guías metodológicas). Las direcciones se comprobaron automáticamente el 28 de octubre de 2026; las que el sitio bloqueó al lector automático están marcadas. No hay textos explicativos escritos por la aplicación: tu explicación va en tus notas.</p>
+    <h3>Conocimiento y reutilización</h3>
+    <p>Los conceptos, teorías, casos, estudios, actores y fuentes los creas tú y los enlazas a mociones, artículos u otros conceptos. La única conexión automática es entre mociones que comparten dos o más categorías temáticas, y se dibuja punteada. En cada moción, «Conocimiento reutilizable» muestra lo que preparaste para mociones conectadas; al copiarlo, se marca su origen y la fecha para que verifiques si sigue siendo pertinente.</p>
+    <h3>Entrenamiento</h3>
+    <p>Los cronómetros siguen los tiempos habituales de BP: 15 minutos de preparación y 7 de discurso, con el primer y el último minuto protegidos de puntos de información y 15 segundos de gracia. La evaluación tiene cuatro dimensiones independientes (argumentación, conocimiento, estrategia y desempeño oral) en una escala de 1 a 5. Es una autoevaluación o la de quien te escuche; la aplicación no califica discursos.</p>
+    <h3>Límites que conviene tener presentes</h3>
+    <ul>
+      <li>Washington Post, CNN y Reuters no tienen feed público que funcione; sus despachos aparecen solo cuando otro medio los publica con crédito.</li>
+      <li>La Silla Vacía solo expone sus 10 últimas piezas por RSS; El Espectador no trae extracto.</li>
+      <li>Un extracto es un fragmento elegido por el medio: no representa todo el artículo.</li>
+      <li>Las piezas de más de 90 días se borran, salvo las que guardaste y las de acontecimientos con 3 o más medios.</li>
+      <li>El proyecto de Supabase gratuito se pausa si pasa 7 días sin uso. Usar Mirador lo mantiene activo.</li>
+    </ul>
+  </div>`;
+};
+
+// ---------- arranque ----------
+async function header() {
+  try {
+    const s = await api("status", {}, { fresh: true });
+    SETTINGS = s.settings || {};
+    const now = new Date();
+    $("#edition").innerHTML = `<b>${esc(fmtDay(now))}</b><br>Feeds leídos ${esc(ago(s.last_fetch))} · ${s.articles_24h} piezas en 24 h · ${s.feeds_active} feeds`;
+  } catch (e) {
+    $("#edition").textContent = "";
+    throw e;
+  }
+}
+let booted = false;
+async function boot() {
+  if (!KEY) { view.innerHTML = keyForm(); $("#edition").textContent = ""; return; }
+  try { await header(); }
+  catch (e) { view.innerHTML = errorBox(e, () => boot()); return; }
+  route();
+  if (!booted) { booted = true; setInterval(() => { header().catch(() => {}); }, 5 * 60 * 1000); }
+}
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) navigator.serviceWorker.register("sw.js").catch(() => {});
+boot();
+</script>
+</body>
+</html>
