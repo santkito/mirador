@@ -216,6 +216,21 @@ blockquote.q { margin: 0; padding: var(--s-2) var(--s-4); border-left: 3px solid
 .prep-sec { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: var(--s-4); }
 .prep-sec h4 { margin: 0 0 var(--s-2); font: 600 1.02rem/1.3 var(--f-display); }
 .prep-sec .hint { font-size: 0.82rem; color: var(--ink-3); margin: 0 0 var(--s-2); }
+.cmp { display: grid; gap: var(--s-3); }
+.cmp-head, .cmp-row { display: grid; grid-template-columns: minmax(8rem, 0.7fr) 1fr 1fr auto; gap: var(--s-2); align-items: start; }
+.cmp-head { font: 600 0.82rem/1.2 var(--f-ui); color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.04em; }
+.cmp-head .g, .cmp-row .g textarea { border-top: 3px solid var(--ink); }
+.cmp-head .o, .cmp-row .o textarea { border-top: 3px dashed var(--ink-3); }
+.cmp-head .g, .cmp-head .o { border-top: none; }
+.cmp-row textarea { min-height: 4.5rem; width: 100%; }
+.cmp-row input { width: 100%; font-weight: 600; }
+.cmp-row .lbl-m { display: none; }
+@media (max-width: 640px) {
+  .cmp-head { display: none; }
+  .cmp-row { grid-template-columns: 1fr; border-top: 1px solid var(--rule); padding-top: var(--s-3); }
+  .cmp-row .lbl-m { display: block; font: 600 0.8rem/1.2 var(--f-ui); color: var(--ink-3); margin-bottom: 0.2rem; }
+  .cmp-row .rm { justify-self: start; }
+}
 .pos4 { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
 .savestate { font: 400 0.78rem/1 var(--f-mono); color: var(--ink-3); }
 .biblio { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
@@ -411,6 +426,17 @@ const PREP = [
   ["estrategia", "Estrategias por posición", ""],
   ["poi", "Preguntas de interrogatorio y posibles respuestas", ""],
 ];
+// Comparativo Gobierno vs Oposición: primer ítem de la preparación. Aspectos sugeridos, editables.
+const CMP_DEFAULT = ["Cómo describe el problema y el statu quo", "Qué propone o defiende", "Mecanismo: por qué funciona", "Actores afectados y cómo cambian", "Principio o métrica con la que quiere ganar"];
+function parseCmp(raw) {
+  try { const r = JSON.parse(raw || "[]"); if (Array.isArray(r) && r.length) return r.map((x) => ({ a: String(x.a || ""), g: String(x.g || ""), o: String(x.o || "") })); } catch { /* nada */ }
+  return CMP_DEFAULT.map((a) => ({ a, g: "", o: "" }));
+}
+const cmpRow = (r, i) => `<div class="cmp-row" data-cmp="${i}">
+  <div><span class="lbl-m">Aspecto</span><input type="text" data-cf="a" value="${esc(r.a)}" aria-label="Aspecto" placeholder="Aspecto"></div>
+  <div class="g"><span class="lbl-m">Gobierno</span><textarea data-cf="g" aria-label="Gobierno: ${esc(r.a)}">${esc(r.g)}</textarea></div>
+  <div class="o"><span class="lbl-m">Oposición</span><textarea data-cf="o" aria-label="Oposición: ${esc(r.a)}">${esc(r.o)}</textarea></div>
+  <button class="linkbtn rm" type="button" data-cmprm aria-label="Quitar fila" title="Quitar fila">×</button></div>`;
 const CO_TOPICS = [["todo","Todo"],["congreso","Congreso y leyes"],["justicia","Justicia y control"],["elecciones","Elecciones y partidos"],["seguridad","Seguridad y paz"],["economia","Economía"],["corrupcion","Corrupción y contratación"],["social","Salud, educación y pensiones"],["internacional","Relaciones exteriores"],["regiones","Regiones"]];
 const DEPTS = ["Amazonas","Antioquia","Arauca","Atlántico","Bogotá","Bolívar","Boyacá","Caldas","Caquetá","Casanare","Cauca","Cesar","Chocó","Córdoba","Cundinamarca","Guainía","Guaviare","Huila","La Guajira","Magdalena","Meta","Nariño","Norte de Santander","Putumayo","Quindío","Risaralda","San Andrés","Santander","Sucre","Tolima","Valle del Cauca","Vaupés","Vichada"];
 const COUNTRY = { CO:"Colombia", VE:"Venezuela", EC:"Ecuador", PE:"Perú", BR:"Brasil", AR:"Argentina", CL:"Chile", BO:"Bolivia", PY:"Paraguay", UY:"Uruguay", MX:"México", GT:"Guatemala", HN:"Honduras", SV:"El Salvador", NI:"Nicaragua", CR:"Costa Rica", PA:"Panamá", CU:"Cuba", DO:"Rep. Dominicana", HT:"Haití", PR:"Puerto Rico", US:"Estados Unidos", CA:"Canadá", GB:"Reino Unido", FR:"Francia", DE:"Alemania", ES:"España", IT:"Italia", PT:"Portugal", NL:"Países Bajos", BE:"Bélgica", PL:"Polonia", UA:"Ucrania", RU:"Rusia", TR:"Turquía", IL:"Israel", PS:"Palestina", LB:"Líbano", JO:"Jordania", SY:"Siria", IQ:"Irak", IR:"Irán", SA:"Arabia Saudita", AE:"Emiratos Árabes", QA:"Catar", YE:"Yemen", EG:"Egipto", CN:"China", TW:"Taiwán", JP:"Japón", KR:"Corea del Sur", KP:"Corea del Norte", IN:"India", PK:"Pakistán", AF:"Afganistán", ID:"Indonesia", PH:"Filipinas", AU:"Australia", ZA:"Sudáfrica", NG:"Nigeria", ET:"Etiopía", SD:"Sudán", CD:"RD Congo", KE:"Kenia", ML:"Malí", BF:"Burkina Faso", NE:"Níger", SN:"Senegal", MA:"Marruecos", DZ:"Argelia", LY:"Libia", GR:"Grecia", HU:"Hungría", RS:"Serbia", CY:"Chipre", AM:"Armenia", AZ:"Azerbaiyán", GE:"Georgia", MM:"Myanmar", TH:"Tailandia", VN:"Vietnam", BD:"Bangladés", SE:"Suecia", NO:"Noruega", FI:"Finlandia", DK:"Dinamarca", CH:"Suiza", AT:"Austria", IE:"Irlanda", QA2:"Catar" };
@@ -436,6 +462,25 @@ const DIMS = [
   ["estrategia", "Estrategia de equipo", "¿Cumplí el rol de mi posición, fui coherente con mi banca y me distinguí de la otra mitad de la sala?", ["Contradice o repite a su banca", "", "Coherente, pero sin cumplir bien el rol", "", "Cumple el rol y gana el choque central"]],
   ["oral", "Desempeño oral", "¿Se entendía la estructura? ¿Manejé el tiempo y los puntos de información?", ["Difícil de seguir o fuera de tiempo", "", "Claro, ritmo irregular", "", "Claro, señalizado, buen manejo de tiempo y POI"]],
 ];
+// Tabla de oradoras: Apéndice A del Manual CMUDE 2026 (actualización de EUDC Varsovia 2016). Texto del manual.
+const SPK = [
+  [95, 100, "Probablemente uno de los mejores discursos de debate presentado en la historia. Es increíblemente difícil pensar en respuestas satisfactorias para cualquiera de los argumentos presentados. Argumentos perfectos y totalmente convincentes."],
+  [92, 94, "Un discurso increíble, indudablemente uno de los mejores que el panel ha visto jamás. Se involucra de forma increíblemente efectiva con los principales temas del debate, y presenta argumentos excepcionales que necesitan respuestas brillantes para ser vencidos. No hay errores o defectos significativos en el discurso."],
+  [89, 91, "Argumentos brillantes que se involucran de forma muy efectiva con los principales temas del debate. Los argumentos son significativamente bien explicados y ejemplificados, y requieren respuestas extremadamente sofisticadas para ser derrotados. Únicamente hay problemas menores, pero no afectan la fortaleza de los argumentos presentados."],
+  [86, 88, "Los argumentos se involucran con los temas principales del debate y son sumamente convincentes. No presenta fallas lógicas, y se requieren respuestas sofisticadas para vencer los argumentos presentados. Únicamente hay pequeñas fallas o errores mínimos, pero casi insignificantes en los argumentos."],
+  [83, 85, "Los argumentos se involucran con los principales temas del debate y son muy convincentes. Los argumentos tienen explicaciones muy sólidas que requieren respuestas fuertes para ser vencidos. En pocas ocasiones fallan en responder de forma suficiente a argumentos bien construidos, pero las fallas en el discurso son muy limitadas."],
+  [79, 82, "Los argumentos son relevantes, y se involucran con los principales temas del debate. Los argumentos están bien construidos, carecen de fallas lógicas evidentes y están bien explicados. Los argumentos podrían llegar a ser vulnerables a buenas respuestas."],
+  [76, 78, "Los argumentos son mayoritariamente relevantes y se involucran con la mayoría de temas principales del debate. En ocasiones, pero no con frecuencia, los argumentos pueden tener: fallas en algunas explicaciones; análisis simplista que es vulnerable a respuestas competentes. Es claro, por lo que se puede seguir y por tanto darle crédito."],
+  [73, 75, "Los argumentos son mayoritariamente relevantes, aunque pueden fallar en involucrarse de manera suficiente con uno o varios temas relevantes para el debate. Los argumentos son lógicos, pero tienden a ser simplistas, con algunas fallas lógicas y son vulnerables a respuestas competentes. Es suficientemente claro como para poder seguirlo y darle crédito."],
+  [70, 72, "Los argumentos son frecuentemente relevantes. Los argumentos tienen algunas explicaciones, pero con regularidad hay fallas lógicas evidentes y/o significativas. A veces es difícil de seguir, y por tanto, dar crédito a la totalidad del discurso."],
+  [67, 69, "Usualmente, los argumentos son relevantes. Casi todos los argumentos tienen algunas explicaciones, pero estas tienen fallas lógicas evidentes y significativas. A veces es claro, pero generalmente es difícil de seguir, y por tanto, es difícil dar crédito al material presentado."],
+  [64, 66, "Algunos de los argumentos presentados son relevantes. Los argumentos generalmente tienen pocas explicaciones, pero estas presentan fallas lógicas significativas. Frecuentemente es poco claro, lo que dificulta darle mucho crédito al discurso."],
+  [61, 63, "Ocasionalmente se presentan algunas afirmaciones relevantes, y la mayoría son construidas y presentadas como argumentos. Ocasionalmente, las afirmaciones se presentan como explicaciones, pero estas tienen fallas lógicas muy significativas. Frecuentemente es poco claro y confuso, lo que dificulta darle mucho crédito al discurso."],
+  [58, 60, "Pocas veces las afirmaciones son relevantes. Las afirmaciones no son construidas y presentadas como argumentos; puede haber algunos esfuerzos por presentar explicaciones, pero estas son muy vagas. Es muy difícil de seguir, lo que dificulta darle mucho crédito al discurso."],
+  [55, 57, "Se presentan un par de afirmaciones casi nunca relevantes. Las afirmaciones no están construidas y presentadas como razonamientos, son más observaciones. El discurso es difícil de seguir casi en su totalidad, lo que dificulta darle mucho crédito."],
+  [50, 54, "El contenido es irrelevante. El contenido no presenta nada que sugiera análisis. Es imposible seguir el discurso en su mayoría, lo que hace difícil darle crédito alguno."],
+];
+const spkBand = (v) => SPK.find(([lo, hi]) => v >= lo && v <= hi);
 // Listas de verificación por disciplina (derivadas de la guía de método de tu especificación).
 const CHECKS = {
   economia: ["Datos oficiales recientes, con fecha", "Al menos un estudio empírico (no solo opinión)", "Modelo o mecanismo económico explícito", "Efectos distributivos: quién gana y quién pierde"],
@@ -558,6 +603,18 @@ function outLink(a) {
   if (prefix && (a.access === "suscripcion" || a.access === "medido" || a.access === "mixto")) return prefix + a.url;
   return a.url;
 }
+// The Economist: acceso completo con tu cuenta institucional de ProQuest Central Premium (publicación 41716).
+// Abre los números del mes del artículo; la edición impresa sale el sábado, así que puede estar en el número siguiente.
+const PROQUEST = { economist: { pub: 41716, account: 41515 } };
+function pqLink(a) {
+  const id = a.outlet_id || a.outlet || (a.outlet_name === "The Economist" ? "economist" : "");
+  const pq = PROQUEST[id];
+  if (!pq || !a.published_at) return "";
+  const [y, m] = bogotaDay(a.published_at).split("-");
+  const dec = Math.floor(Number(y) / 10) * 10;
+  const u = `https://www.proquest.com/centralpremium/publication/${pq.pub}?accountid=${pq.account}&decadeSelected=${encodeURIComponent(dec + " - " + (dec + 9))}&yearSelected=${y}&monthSelected=${m}&issueNameSelected=`;
+  return `<a href="${esc(u)}" target="_blank" rel="noopener" title="Números de ${esc(m + "/" + y)} en ProQuest. Busca el titular en el número de esa semana o el siguiente.">Leer en ProQuest</a>`;
+}
 const tyChip = (t) => t && t !== "noticia" ? `<span class="ty ty-${esc(String(t).replace(/ /g, "-"))}">${esc(t)}</span>` : "";
 const accChip = (a) => ACCESS[a] ? `<span class="acc">${esc(ACCESS[a])}</span>` : "";
 const catName = (c) => CATS[c] || c;
@@ -603,6 +660,7 @@ function articleRow(a, { showExcerpt = true, extra = "" } = {}) {
     ${showExcerpt && a.excerpt ? `<p class="a-ex"><span class="lbl">Extracto del feed</span>${esc(a.excerpt)}</p>` : ""}
     <div class="a-actions">
       <button class="linkbtn" data-save="${a.id}" data-saved="${a.saved ? 1 : 0}">${a.saved ? "Quitar de guardados" : "Guardar"}</button>
+      ${pqLink(a)}
       ${a.event_outlets > 1 ? `<a href="#evento-${a.event_id}">Ver ${a.event_outlets} medios sobre esto</a>` : ""}
       ${archiveBtns(a.id)}
       ${extra}
@@ -831,7 +889,7 @@ VIEWS.evento = async (id, alive) => {
         <div class="a-head"><span class="out">${esc(a.outlet_name)}</span>${tyChip(a.type)}${accChip(a.access)}${a.agency ? `<span>Crédito: ${esc(a.agency)}</span>` : ""}${a.author ? `<span>${esc(a.author)}</span>` : ""}</div>
         <p class="a-title" style="margin-top:.2rem"><a href="${esc(outLink(a))}" target="_blank" rel="noopener">${esc(a.title)}</a></p>
         ${a.excerpt ? `<p class="a-ex"><span class="lbl">Extracto publicado por ${esc(a.outlet_name)}</span>${esc(a.excerpt)}</p>` : `<p class="a-ex muted small">El feed de este medio no publica extracto; abre el original.</p>`}
-        <div class="a-actions"><button class="linkbtn" data-save="${a.id}" data-saved="${a.saved ? 1 : 0}">${a.saved ? "Quitar de guardados" : "Guardar"}</button>${archiveBtns(a.id)}</div>
+        <div class="a-actions"><button class="linkbtn" data-save="${a.id}" data-saved="${a.saved ? 1 : 0}">${a.saved ? "Quitar de guardados" : "Guardar"}</button>${pqLink(a)}${archiveBtns(a.id)}</div>
       </div></li>`).join("")}</ol>
 
     <h3 class="sec">Cambios en titulares y extractos</h3>
@@ -1401,15 +1459,15 @@ function timerPhase(ex, t) {
   if (ex.poi) { if (t < 60) return ["prot", "Minuto protegido: no se aceptan puntos de información"]; if (t >= ex.total - 60) return ["prot", "Minuto protegido: cierra y resume"]; return ["poi", "Se pueden ofrecer puntos de información"]; }
   return ["", ""];
 }
-function sparkSvg(pts) {
+function sparkSvg(pts, lo = 1, hi = 5, ticks = [1, 3, 5]) {
   const W = 240, H = 56, pad = 8;
   if (!pts.length) return `<p class="small muted" style="margin:.4rem 0 0">Sin datos.</p>`;
   const x = (i) => pts.length === 1 ? W / 2 : pad + (i * (W - 2 * pad)) / (pts.length - 1);
-  const y = (v) => H - pad - ((v - 1) / 4) * (H - 2 * pad);
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución de 1 a 5">
-    ${[1, 3, 5].map((v) => `<line class="gr" x1="0" x2="${W}" y1="${y(v)}" y2="${y(v)}" vector-effect="non-scaling-stroke"></line>`).join("")}
+  const y = (v) => H - pad - ((Math.min(hi, Math.max(lo, v)) - lo) / (hi - lo)) * (H - 2 * pad);
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución de ${lo} a ${hi}">
+    ${ticks.map((v) => `<line class="gr" x1="0" x2="${W}" y1="${y(v)}" y2="${y(v)}" vector-effect="non-scaling-stroke"></line>`).join("")}
     ${pts.length > 1 ? `<polyline class="ln" vector-effect="non-scaling-stroke" points="${pts.map((p, i) => `${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(" ")}"></polyline>` : ""}
-    ${pts.map((p, i) => `<g tabindex="0" data-tipv="${p.v} de 5" data-tip="${esc(p.tip)}"><circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="12" fill="transparent"></circle><circle class="pt" cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="4" vector-effect="non-scaling-stroke"></circle></g>`).join("")}
+    ${pts.map((p, i) => `<g tabindex="0" data-tipv="${p.v} de ${hi}" data-tip="${esc(p.tip)}"><circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="12" fill="transparent"></circle><circle class="pt" cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="4" vector-effect="non-scaling-stroke"></circle></g>`).join("")}
   </svg>`;
 }
 VIEWS.entrenar = async (mid, alive) => {
@@ -1426,7 +1484,8 @@ VIEWS.entrenar = async (mid, alive) => {
   const pf = lsGet("tPick", { category: "", tournament_id: "", unpracticed: false });
   const isGov = pos === "OG" || pos === "CG";
   const splitArgs = (t) => String(t || "").split(/\n\s*\n|\n(?=\s*[-•*\d]+[.)]?\s)/).map((s) => s.trim()).filter((s) => s.length > 8);
-  const toRefute = splitArgs(isGov ? prep.oposicion : prep.gobierno);
+  const toRefute = splitArgs(isGov ? prep.oposicion : prep.gobierno)
+    .concat(parseCmp(prep._comparativa).filter((r) => (isGov ? r.o : r.g).trim()).map((r) => `${r.a}: ${(isGov ? r.o : r.g).trim()}`));
   const opening = [prep[isGov ? "estrategia_og" : "estrategia_oo"], prep[isGov ? "gobierno" : "oposicion"]].filter(Boolean).join("\n\n");
   // progreso por dimensión: sesiones en orden cronológico
   const chron = [...sessions].reverse();
@@ -1435,11 +1494,14 @@ VIEWS.entrenar = async (mid, alive) => {
     const avg = pts.length ? pts.reduce((a, p) => a + p.v, 0) / pts.length : null;
     return { k, label, pts, avg, last: pts.length ? pts[pts.length - 1].v : null };
   });
+  const spkPts = chron.filter((s) => s.speaker_points).map((s) => ({ v: Number(s.speaker_points), tip: `${fmtDate(s.created_at)} · ${s.kind}${s.position ? " " + s.position : ""}` }));
+  const spkAvg = spkPts.length ? spkPts.reduce((a, p) => a + p.v, 0) / spkPts.length : null;
+  const spkLast = spkPts.length ? spkPts[spkPts.length - 1].v : null;
   view.innerHTML = `
     <div class="layout">
       <div>
         <h2 class="view">Entrenamiento BP</h2>
-        <p class="lede">Simula una ronda por partes: preparación con tiempo, discurso de tu posición, refutación y extensión de cierre. Al final, evalúa por separado la calidad argumentativa, el conocimiento factual, la estrategia de equipo y el desempeño oral.</p>
+        <p class="lede">Simula una ronda por partes: preparación con tiempo, discurso de tu posición, refutación y extensión de cierre. Al final, ponte puntos de oradora con la tabla del Manual CMUDE y, si quieres, evalúa por separado la calidad argumentativa, el conocimiento factual, la estrategia de equipo y el desempeño oral.</p>
 
         <h3 class="sec">1 · Moción</h3>
         ${mo ? `<div class="card"><div class="prov">${esc(md.tournament?.name || "")} · ${esc(mo.round_name || "Sin ronda")}</div>
@@ -1481,8 +1543,17 @@ VIEWS.entrenar = async (mid, alive) => {
         ${exKey === "preparación" || exKey === "discurso" ? `<div class="field" style="margin-top:var(--s-4)"><label for="t-scr">Notas de esta práctica</label><textarea id="t-scr" placeholder="Esquema del discurso, ideas sueltas…"></textarea></div>` : ""}
 
         <h3 class="sec">3 · Evaluación</h3>
-        <p class="small muted" style="margin-top:0">Puntúa cada dimensión por separado. Un discurso bien dicho con datos flojos debe tener buena nota oral y baja de conocimiento: mezclarlas esconde qué mejorar.</p>
         <form id="t-eval" class="rubric">
+          <fieldset><legend>Puntos de oradora</legend>
+            <p class="small" style="margin:0">Tabla de oradoras del Manual CMUDE 2026 (Apéndice A), actualizada por el equipo de adjudicación de EUDC Varsovia 2016. Elige el rango que mejor describe el discurso en conjunto y ajusta el número.</p>
+            <div class="scale" role="group" aria-label="Rango de puntos">${SPK.map(([lo, hi]) => `<label><input type="radio" name="spkband" value="${lo}-${hi}"><span>${lo}–${hi}</span></label>`).join("")}</div>
+            <div class="row" style="align-items:flex-start">
+              <div class="field" style="flex:0 0 7.5rem;min-width:0"><label for="t-spks">Puntos (50–100)</label><input type="number" id="t-spks" min="50" max="100" step="1" inputmode="numeric" style="width:100%"></div>
+              <p class="small" id="t-spkd" style="margin:1.4rem 0 0;flex:1 1 16rem;min-width:0">Sin puntos todavía.</p>
+            </div>
+            <p class="small muted" style="margin:var(--s-2) 0 0">Según el manual, en CMUDE la mayoría de discursos caen entre los 60 altos, los 70 y los 80 bajos. Un discurso puede estar en rangos distintos según la característica: busca el que equilibre todas.</p>
+          </fieldset>
+          <p class="small muted" style="margin:0">Opcional: puntúa cada dimensión por separado. Un discurso bien dicho con datos flojos debe tener buena nota oral y baja de conocimiento: mezclarlas esconde qué mejorar.</p>
           ${DIMS.map(([k, label, q, anchors]) => `<fieldset><legend>${label}</legend>
             <p class="small" style="margin:0">${esc(q)}</p>
             <div class="scale">${[1, 2, 3, 4, 5].map((v) => `<label><input type="radio" name="${k}" value="${v}"><span>${v}</span></label>`).join("")}</div>
@@ -1496,15 +1567,16 @@ VIEWS.entrenar = async (mid, alive) => {
       <aside class="rail">
         <section>
           <h3 class="sec" style="margin-top:0">Tu progreso · ${esc(plural(sessions.length, "sesión", "sesiones"))}</h3>
-          ${sessions.length ? `<div class="sparks" style="grid-template-columns:1fr">${series.map((s) => `<div class="spark"><h5>${esc(s.label)}</h5>
+          ${sessions.length ? `<div class="sparks" style="grid-template-columns:1fr"><div class="spark"><h5>Puntos de oradora</h5>
+              <div class="big mono">${spkLast ?? "–"}<span class="small muted" style="font-family:var(--f-ui)"> última · promedio ${spkAvg != null ? spkAvg.toFixed(1) : "–"} en ${spkPts.length}</span></div>${sparkSvg(spkPts, 50, 100, [50, 75, 100])}${spkLast ? `<p class="small muted" style="margin:.3rem 0 0">Rango ${spkBand(spkLast)[0]}–${spkBand(spkLast)[1]} de la tabla.</p>` : ""}</div>${series.map((s) => `<div class="spark"><h5>${esc(s.label)}</h5>
               <div class="big mono">${s.last ?? "–"}<span class="small muted" style="font-family:var(--f-ui)"> última · promedio ${s.avg != null ? s.avg.toFixed(1) : "–"} en ${s.pts.length}</span></div>${sparkSvg(s.pts)}</div>`).join("")}</div>
-            <p class="small muted">Cada gráfico va de 1 a 5, en orden de práctica. Son autoevaluaciones: sirven para ver tendencias tuyas, no para compararte con nadie.</p>`
+            <p class="small muted">Puntos de oradora de 50 a 100; las dimensiones de 1 a 5. En orden de práctica. Son autoevaluaciones: sirven para ver tendencias tuyas, no para compararte con nadie.</p>`
             : `<p class="small muted" style="margin-top:0">Cuando guardes sesiones verás aquí cómo evoluciona cada dimensión por separado.</p>`}
         </section>
         ${sessions.length ? `<section><h3 class="sec">Historial</h3>
-          <div class="scroll"><table class="dist" style="width:100%"><tr><th>Fecha</th><th>Ejercicio</th><th title="Argumentación">A</th><th title="Conocimiento">C</th><th title="Estrategia">E</th><th title="Oral">O</th><th></th></tr>
-          ${sessions.slice(0, 30).map((s) => `<tr><td title="${esc(s.motion || "")}" style="white-space:nowrap">${esc(fmtDayShort(bogotaDay(s.created_at)))}</td><td style="text-align:left">${esc(s.kind)}${s.position ? " " + esc(s.position) : ""}${s.speech_seconds ? ` · ${mmss(s.speech_seconds)}` : ""}</td>${DIMS.map(([k]) => `<td>${esc(s.scores?.[k] ?? "–")}</td>`).join("")}<td><button class="linkbtn" data-tdel="${s.id}" aria-label="Borrar sesión" title="Borrar sesión">×</button></td></tr>`).join("")}</table></div>
-          <p class="small muted">A argumentación · C conocimiento · E estrategia · O oral.</p></section>` : ""}
+          <div class="scroll"><table class="dist" style="width:100%"><tr><th>Fecha</th><th>Ejercicio</th><th title="Puntos de oradora">Pts</th><th title="Argumentación">A</th><th title="Conocimiento">C</th><th title="Estrategia">E</th><th title="Oral">O</th><th></th></tr>
+          ${sessions.slice(0, 30).map((s) => `<tr><td title="${esc(s.motion || "")}" style="white-space:nowrap">${esc(fmtDayShort(bogotaDay(s.created_at)))}</td><td style="text-align:left">${esc(s.kind)}${s.position ? " " + esc(s.position) : ""}${s.speech_seconds ? ` · ${mmss(s.speech_seconds)}` : ""}</td><td>${esc(s.speaker_points ?? "–")}</td>${DIMS.map(([k]) => `<td>${esc(s.scores?.[k] ?? "–")}</td>`).join("")}<td><button class="linkbtn" data-tdel="${s.id}" aria-label="Borrar sesión" title="Borrar sesión">×</button></td></tr>`).join("")}</table></div>
+          <p class="small muted">Pts puntos de oradora · A argumentación · C conocimiento · E estrategia · O oral.</p></section>` : ""}
         <section class="note" style="margin:0"><b>Sobre las estadísticas de torneo.</b> Que una posición haya ganado más en un torneo no dice si tus argumentos son buenos. Evalúa el razonamiento y la evidencia por sí mismos.</section>
       </aside>
     </div>`;
@@ -1545,17 +1617,35 @@ VIEWS.entrenar = async (mid, alive) => {
   };
   $("#t-reset").onclick = () => { stopTimers(); TRAIN.acc = 0; TRAIN.marks = new Set(); $("#t-go").textContent = "Iniciar"; draw(); };
 
+  // puntos de oradora: rango ↔ número ↔ descripción
+  const spkIn = $("#t-spks");
+  const showSpk = () => {
+    const v = Number(spkIn.value);
+    const b = spkIn.value !== "" && Number.isInteger(v) ? spkBand(v) : null;
+    $("#t-spkd").textContent = b ? `${b[0]}–${b[1]}: ${b[2]}` : (spkIn.value === "" ? "Sin puntos todavía." : "Usa un número entero entre 50 y 100.");
+    view.querySelectorAll('input[name="spkband"]').forEach((r) => { r.checked = !!b && r.value === `${b[0]}-${b[1]}`; });
+  };
+  view.querySelectorAll('input[name="spkband"]').forEach((r) => r.onchange = () => {
+    const [lo, hi] = r.value.split("-").map(Number);
+    const cur = Number(spkIn.value);
+    if (!(cur >= lo && cur <= hi)) spkIn.value = Math.round((lo + hi) / 2);
+    showSpk();
+  });
+  spkIn.oninput = showSpk;
+
   // guardar sesión
   $("#t-eval").onsubmit = async (e) => {
     e.preventDefault();
     const scores = {}, notes = { evaluador: $("#t-who").value };
     DIMS.forEach(([k]) => { const r = view.querySelector(`input[name="${k}"]:checked`); if (r) scores[k] = Number(r.value); const n = $(`#tn-${k}`).value.trim(); if (n) notes[k] = n; });
-    if (!Object.keys(scores).length) { $("#t-st").textContent = "Puntúa al menos una dimensión."; return; }
+    const spRaw = spkIn.value.trim(), sp = Number(spRaw);
+    if (spRaw && !(Number.isInteger(sp) && sp >= 50 && sp <= 100)) { $("#t-st").textContent = "Los puntos de oradora van de 50 a 100, en números enteros."; return; }
+    if (!Object.keys(scores).length && !spRaw) { $("#t-st").textContent = "Ponte puntos de oradora o puntúa al menos una dimensión."; return; }
     const t = Math.round(elapsed());
     for (const [id, key] of [["t-arg", "argumento"], ["t-reb", "refutacion"], ["t-ext", "extension"], ["t-scr", "notas"]]) { const el = document.getElementById(id); if (el && el.value.trim()) notes[key] = el.value.trim(); }
     try {
       await api("training_save", { motion_id: mo ? mo.id : null, kind: exKey, position: pos, speaker: $("#t-spk").value,
-        prep_seconds: ex.down ? t || null : null, speech_seconds: ex.down ? null : t || null, scores, notes });
+        prep_seconds: ex.down ? t || null : null, speech_seconds: ex.down ? null : t || null, scores, notes, speaker_points: spRaw ? sp : null });
       stopTimers(); route();
     } catch (er) { $("#t-st").textContent = er.message; }
   };
@@ -1788,6 +1878,12 @@ VIEWS.mocion = async (id, alive) => {
         <h3 class="sec">Espacio de preparación</h3>
         ${guides.length ? `<div class="note"><b>Método para esta moción.</b> ${guides.map(esc).join(" ")}</div>` : ""}
         <div class="prep-grid" id="prep">
+          <div class="prep-sec"><h4>Comparativo: Gobierno frente a Oposición</h4>
+            <p class="hint">Para cada aspecto, cómo lo describe cada bancada. Sirve para ver dónde chocan y qué es exclusivo de cada lado. Cambia los aspectos o agrega los que necesites.</p>
+            <div class="cmp" id="cmp"><div class="cmp-head"><span>Aspecto</span><span class="g">Gobierno</span><span class="o">Oposición</span><span></span></div>
+              ${parseCmp(prep._comparativa).map(cmpRow).join("")}</div>
+            <button class="btn quiet" type="button" id="cmp-add" style="margin-top:var(--s-2)">Agregar aspecto</button>
+          </div>
           ${PREP.map(([k, label, hint]) => k === "estrategia" ? `
             <div class="prep-sec"><h4>${label}</h4><div class="pos4">${["OG","OO","CG","CO"].map((p) => `<div class="field"><label for="p-${p}">${p}</label><textarea id="p-${p}" data-k="estrategia_${p.toLowerCase()}" style="min-height:4rem">${esc(prep["estrategia_" + p.toLowerCase()] || "")}</textarea></div>`).join("")}</div></div>`
             : `<div class="prep-sec"><h4><label for="p-${k}">${label}</label></h4>${hint ? `<p class="hint">${esc(hint)}</p>` : ""}<textarea id="p-${k}" data-k="${k}">${esc(prep[k] || "")}</textarea></div>`).join("")}
@@ -1833,6 +1929,10 @@ VIEWS.mocion = async (id, alive) => {
     view.querySelectorAll("#prep textarea[data-k]").forEach((t) => { if (t.value.trim()) sections[t.dataset.k] = t.value; });
     const ch = [...view.querySelectorAll("[data-chk]:checked")].map((x) => x.dataset.chk);
     if (ch.length) sections._checklist = JSON.stringify(ch);
+    const cmp = [...view.querySelectorAll("#cmp .cmp-row")].map((row) => ({
+      a: row.querySelector('[data-cf="a"]').value.trim(), g: row.querySelector('[data-cf="g"]').value, o: row.querySelector('[data-cf="o"]').value,
+    }));
+    if (cmp.some((r) => r.g.trim() || r.o.trim())) sections._comparativa = JSON.stringify(cmp.filter((r) => r.a || r.g.trim() || r.o.trim()));
     const srcs = [...view.querySelectorAll("#bib tr[data-i]")].map((tr) => ({
       title: tr.querySelector("[data-f=title]").value.trim(), url: tr.querySelector("[data-f=url]").value.trim(),
       date: tr.querySelector("[data-f=date]").value, type: tr.querySelector("[data-f=type]").value,
@@ -1851,6 +1951,7 @@ VIEWS.mocion = async (id, alive) => {
   };
   $("#prep-save").onclick = save;
   view.querySelectorAll("#prep textarea").forEach((t) => { t.addEventListener("change", save); });
+  view.querySelectorAll("#cmp .cmp-row").forEach((r) => { r.dataset.bound = "1"; });
   $("#bib-add").onclick = () => { const tb = $("#bib tbody") || $("#bib"); tb.insertAdjacentHTML("beforeend", bibRow({}, Date.now())); };
   $("#bib").addEventListener("change", save);
   $("#bib").addEventListener("click", (e) => { const b = e.target.closest("[data-rm]"); if (b) { b.closest("tr").remove(); save(); } });
@@ -1861,6 +1962,9 @@ VIEWS.mocion = async (id, alive) => {
   });
   $("#mdiff").onchange = async (e) => { try { await api("motion_tags", { id, difficulty: e.target.value }); toast("Dificultad guardada"); } catch (er) { toast(er.message); } };
   view.querySelectorAll("[data-chk]").forEach((c) => c.addEventListener("change", save));
+  $("#cmp").addEventListener("change", (e) => { if (e.target.matches('input[data-cf="a"]') || !e.target.closest(".cmp-row").dataset.bound) save(); });
+  $("#cmp").addEventListener("click", (e) => { const b = e.target.closest("[data-cmprm]"); if (b) { b.closest(".cmp-row").remove(); save(); } });
+  $("#cmp-add").onclick = () => { $("#cmp").insertAdjacentHTML("beforeend", cmpRow({ a: "", g: "", o: "" }, Date.now())); $("#cmp .cmp-row:last-child input").focus(); };
 
   // conceptos y conocimiento reutilizable (carga aparte para no demorar la vista)
   const PREPNAME = Object.fromEntries(PREP.map(([k, l]) => [k, l]).concat(POS.map((p) => ["estrategia_" + p.toLowerCase(), "Estrategia " + p])));
